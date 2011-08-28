@@ -81,43 +81,28 @@ BuzzQUI.prototype.goFind = function(event) {
 	};
 	callbackFunction = 
 		function () {
-		  
-		  /* Twitpic JSON
-		   var info = eval('('+xmlHttp.responseText+')');
-	      for (var i = 0;i<info.images.length;i++) {	  
-		      debug.println('DATA:'+info.images[i].message);
-		  }; 
-		  */
-		  /* Twitter JSON 
-		  
-		
-		  
-		  var info = eval('('+xmlHttp.responseText+')');
-		  for (var i = 0;i<info.results.length;i++) {	  
-			  debug.println('DATA:'+info.results[i].text);
-		  }; 
-		  */
-		  
-		  debug.println("CALLBACK"+xmlHttp.responseText);
-		 
+	      var resultObjects = eval('('+xmlHttp.responseText+')'); 
+	      debug.println('RESULTS:');
+	      for (var i = 0;i<resultObjects.length;i++) {
+    		  debug.println('text: '+resultObjects[i].text);
+    		  debug.println('date: '+ resultObjects[i].timestamp);
+    		  debug.println('user: '+ resultObjects[i].user);
+    		  debug.println('imageUrl: '+ resultObjects[i].imageUrl);
+    		  debug.println('source: '+ resultObjects[i].source);
+    		  debug.println('----');
+    	  };
 	      return;
 	};
 	
 	debug.println("EVENT HANDLER: GOFIND on DOM Element"+id);
-   
-    
     url=api.url;
     url=url+api.endPoint+"?q="+this.searchString;
-    //url="http://localhost:8080/springapp/ajaxDebugData.json";
     
     if (!(this.searchString == "")) {  
     	debug.println('AJAX call on:'+this.searchString + url);
-    	//debug.println('CBACK:'+ callbackFunction.toString());
         invokeAJAXCall(xmlHttp,url,callbackFunction);
     };
-	
-
-	
+		
 };
 
 

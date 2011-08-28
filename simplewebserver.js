@@ -78,14 +78,16 @@ http.createServer(function (request, response) {
 	var twitPicBuffer = '';
 	var twitterCallComplete = false;
 	var twitPicCallComplete = false;
+	var resultObjects = new Array();
 	
 	var endHandler = function() {
 			console.log ('END Handler!');
 			if (twitterCallComplete && twitPicCallComplete) {
 				try {	   
 						response.writeHead(200, {'Content-Type': 'text/plain'});
-						response.write(twitterBuffer,encoding='utf8');
-						response.write(twitPicBuffer,encoding='utf8');
+						/*response.write(twitterBuffer,encoding='utf8');
+						  response.write(twitPicBuffer,encoding='utf8');*/
+						response.write(JSON.stringify(resultObjects),encoding='utf8');
 				}
 				catch (e) {
 						console.log('EXCEPTION in END Handler:'+e);
@@ -110,8 +112,18 @@ http.createServer(function (request, response) {
 			          var info = eval('('+twitterBuffer+')');
 			          twitterBuffer = 'TWITTER<BR>';
 			          if (info!=null && info.results!=null) {
-			        	  for (var i = 0;i<info.results.length;i++) {	  
+			        	  for (var i = 0;i<info.results.length;i++) {
+			        		  
 			        		  twitterBuffer = twitterBuffer + info.results[i].text + '--'+ info.results[i].created_at +'<BR>';
+			        		  twitterBuffer = twitterBuffer + '@'+ info.results[i].from_user + '--' + info.results[i].profile_image_url + '<BR>';
+			        	      
+			        		resultObjects.push({
+			        			text: info.results[i].text,
+			        			timestamp: info.results[i].created_at,
+			        			user: info.results[i].from_user,
+			        			imageUrl: info.results[i].profile_image_url,
+			        			source: 'twitter'
+			        		});  
 			        	  };
 			          };
 			          twitterCallComplete = true;
@@ -124,7 +136,8 @@ http.createServer(function (request, response) {
 	    	 			});
 	 
 	 
-	/*  http://api.twitpic.com/2/tags/show.json?tag=vic20 */
+	/*  http://api.twitpic.com/2/tags/show.json?tag=vic20 
+	 *  http://twitpic.com/show/thumb/1e10q */
 	  
 	  
 	  http.get(twitPicOptions, 
@@ -146,6 +159,14 @@ http.createServer(function (request, response) {
 					          if (info!=null && info.images!=null) {
 					        	  for (var i = 0;i<info.images.length;i++) {	  
 					        		  twitPicBuffer = twitPicBuffer + info.images[i].message + '--'+ info.images[i].timestamp +'<BR>';
+					        		  twitPicBuffer = twitPicBuffer + 'http://twitpic.com/show/thumb/'+ info.images[i].short_id + '<BR>';
+					        		  resultObjects.push({
+						        			text: info.images[i].message,
+						        			timestamp: info.images[i].timestamp,
+						        			user: null,
+						        			imageUrl: 'http://twitpic.com/show/thumb/'+ info.images[i].short_id,
+						        			source: 'twitpic'
+						        		});  
 					        	  };
 					          };
 					          twitPicCallComplete = true;
