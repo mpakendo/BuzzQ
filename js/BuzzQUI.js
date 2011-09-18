@@ -82,6 +82,10 @@ BuzzQUI.prototype.goFind = function(event) {
 	callbackFunction = 
 		function () {
 	      var resultObjects = eval('('+xmlHttp.responseText+')'); 
+	      
+	      var twitterResults = '<p>';
+	      var twitpicResults ='';
+
 	      debug.println('RESULTS:');
 	      for (var i = 0;i<resultObjects.length;i++) {
     		  debug.println('text: '+resultObjects[i].text);
@@ -90,7 +94,28 @@ BuzzQUI.prototype.goFind = function(event) {
     		  debug.println('imageUrl: '+ resultObjects[i].imageUrl);
     		  debug.println('source: '+ resultObjects[i].source);
     		  debug.println('----');
+    		  if (resultObjects[i].source == "twitter") {
+    			twitterResults += (resultObjects[i].text+'<br>');
+    			twitterResults += (resultObjects[i].timestamp+'<br>');
+    			twitterResults += (resultObjects[i].user+'<br>');
+    			// <img src="angry.gif" alt="Angry face" title="Angry face" />
+    			twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" /> <br>');
+    		  }
+    		  else if (resultObjects[i].source == "twitpic") {
+    			  
+    			  
+    			  twitpicResults = '<li><a href=\"'+resultObjects[i].imageUrl+'\"><img src=\"'+resultObjects[i].imageUrl+'\" ';
+    			  twitpicResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].timestamp + ' ';
+    			  twitpicResults += resultObjects[i].user + '\" class=\"image'+i+'\"></a></li>';
+    			  $('#twitpic-gallery-thumbs').append(twitpicResults);
+    			     
+    		  };
     	  };
+    	
+    	  twitterResults += '</p>';
+    	  $('#twitter-tab').html(twitterResults);
+    	 
+    	  var galleries = $('.ad-gallery').adGallery();
 	      return;
 	};
 	
