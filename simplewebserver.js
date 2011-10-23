@@ -85,8 +85,6 @@ http.createServer(function (request, response) {
 			if (twitterCallComplete && twitPicCallComplete) {
 				try {	   
 						response.writeHead(200, {'Content-Type': 'text/plain'});
-						/*response.write(twitterBuffer,encoding='utf8');
-						  response.write(twitPicBuffer,encoding='utf8');*/
 						response.write(JSON.stringify(resultObjects),encoding='utf8');
 				}
 				catch (e) {
