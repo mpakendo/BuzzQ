@@ -110,7 +110,7 @@
       font-style: italic;
     }
   .ad-gallery .ad-nav {
-    width: 100%;
+      width: 100%; 
     position: relative;
   }
     .ad-gallery .ad-forward, .ad-gallery .ad-back {

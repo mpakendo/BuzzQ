@@ -48,7 +48,7 @@ function getXmlHttpObject() {
 function invokeAJAXCall(xmlHttp,url, func) {
 	xmlHttp.onreadystatechange= 
 		function() {
-		  debug.printf("READYSTATECHANGE:"+xmlHttp.readyState+" STATUS:"+xmlHttp.status+" TEXT: "+xmlHttp.statusText);
+		  //debug.printf("READYSTATECHANGE:"+xmlHttp.readyState+" STATUS:"+xmlHttp.status+" TEXT: "+xmlHttp.statusText);
 			if (xmlHttp.readyState==4) {
 				if (xmlHttp.status==200) {
 					func();
@@ -64,7 +64,7 @@ function invokeAJAXCall(xmlHttp,url, func) {
 BuzzQUI.prototype.setSearchString = function(event) {
 	var id = getAttrFromEvent(event,"id");
 	this.searchString = $("#"+id).val();
-	debug.println("EVENT HANDLER: set search string on DOM Element "+id+" for VAL: "+this.searchString);
+	//debug.println("EVENT HANDLER: set search string on DOM Element "+id+" for VAL: "+this.searchString);
 };
 
 BuzzQUI.prototype.goFind = function(event) {
@@ -83,47 +83,75 @@ BuzzQUI.prototype.goFind = function(event) {
 		function () {
 	      var resultObjects = eval('('+xmlHttp.responseText+')'); 
 	      
-	      var twitterResults = '<p>';
+	      var twitterResults = '';
 	      var twitpicResults ='';
+	      var twitpicTab = '<div id="gallery" class="ad-gallery"><div class="ad-image-wrapper"></div><div class="ad-controls"></div><div class="ad-nav"><div class="ad-thumbs"><ul id="twitpic-gallery-thumbs" class="ad-thumb-list"></ul></div></div></div>';	
 	      
 	      $('#twitter-tab').html(twitterResults);
-	      $('#twitpic-gallery-thumbs').empty();
+	      $('#twitpic-tab').html(twitpicTab);
+	    //  $('#twitpic-gallery-thumbs').empty();
 
-	      debug.println('RESULTS:');
+	      //debug.println('RESULTS:');
 	      for (var i = 0;i<resultObjects.length;i++) {
-    		  debug.println('text: '+resultObjects[i].text);
+    		  /*debug.println('text: '+resultObjects[i].text);
     		  debug.println('date: '+ resultObjects[i].timestamp);
     		  debug.println('user: '+ resultObjects[i].user);
     		  debug.println('imageUrl: '+ resultObjects[i].imageUrl);
     		  debug.println('source: '+ resultObjects[i].source);
-    		  debug.println('----');
+    		  debug.println('----');*/
     		  if (resultObjects[i].source == "twitter") {
-    			twitterResults += (resultObjects[i].text+'<br>');
+    			var linkPattern = new RegExp("http://([.]|[^ ])*","g");
+                var links = resultObjects[i].text.match(linkPattern);
+                var newText = resultObjects[i].text;
+    			twitterResults += '<p>';
+    	   		twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" /> <br>');
+
+    	   		if (links) {
+    	          //<a href="http://URL" target="_blank">TEXT</a>
+                       debug.println("LINKS FOUND:"+links.length);
+                       for (var j = 0; j<links.length; j++) {
+                       debug.println("LINK "+links[j]);
+                           var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\"/>' + links[j] +'</a>';
+                           newText = newText.replace(links[j],htmlLink);
+                           debug.println("REPL TEXT:"+newText);
+                       }
+                     twitterResults += newText;
+                     twitterResults += '<br>';
+
+                } else {
+                     twitterResults += (newText+'<br>');
+                }
+
+
+
+                //twitterResults += (newText+'<br>');
     			twitterResults += (resultObjects[i].timestamp+'<br>');
-    			twitterResults += (resultObjects[i].user+'<br>');
+    			twitterResults += (resultObjects[i].user+'</p>');
     			// <img src="angry.gif" alt="Angry face" title="Angry face" />
-    			twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" /> <br>');
     		  }
     		  else if (resultObjects[i].source == "twitpic") {
-    			  
     			  
     			  twitpicResults = '<li><a href=\"'+resultObjects[i].imageUrl+'\"><img src=\"'+resultObjects[i].imageUrl+'\" ';
     			  twitpicResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].timestamp + ' ';
     			  twitpicResults += resultObjects[i].user + '\" class=\"image'+i+'\"></a></li>';
     			  $('#twitpic-gallery-thumbs').append(twitpicResults);
-    			     
     		  };
     	  };
     	
-    	  twitterResults += '</p>';
-    	  $('#twitter-tab').html(twitterResults);
-    	 
+    	  //twitterResults += '</p>';
+    	  //$('#twitter-tab').html(twitterResults);
+            //console.log("TWITTER RESULTS: "+twitterResults);
+          //$('#twitter-tab').append(twitterResults);
+            document.getElementById('twitter-tab').innerHTML = twitterResults+'<br>';
+
     	  if (twitpicResults != '') {
     	  //var galleries = $('.ad-gallery').adGallery();
+    		  
+		     
 	    	  var galleries = $('.ad-gallery').adGallery({
 	    		  loader_image: 'loader.gif',
 	    		  width: 650, // Width of the image, set to false and it will read the CSS width
-	    		  height: 350, // Height of the image, set to false and it will read the CSS height
+	    		  height: 175, // Height of the image, set to false and it will read the CSS height
 	    		  thumb_opacity: 0.7, // Opacity that the thumbs fades to/from, (1 removes fade effect)
 	    		                      // Note that this effect combined with other effects might be resource intensive
 	    		                      // and make animations lag
@@ -161,6 +189,7 @@ BuzzQUI.prototype.goFind = function(event) {
 	    		    init: function() {
 	    		      // preloadAll uses recursion to preload each image right after one another
 	    		      this.preloadAll();
+	    		     
 	    		    },
 	    		    // This gets fired right after the new_image is fully visible
 	    		    afterImageVisible: function() {
@@ -185,12 +214,12 @@ BuzzQUI.prototype.goFind = function(event) {
 	      return;
 	};
 	
-	debug.println("EVENT HANDLER: GOFIND on DOM Element"+id);
+	//debug.println("EVENT HANDLER: GOFIND on DOM Element"+id);
     url=api.url;
     url=url+api.endPoint+"?q="+this.searchString;
     
     if (!(this.searchString == "")) {  
-    	debug.println('AJAX call on:'+this.searchString + url);
+    	//debug.println('AJAX call on:'+this.searchString + url);
     	// $('#twitter-tab').html('');
         invokeAJAXCall(xmlHttp,url,callbackFunction);
     };
