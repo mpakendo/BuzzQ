@@ -5,16 +5,14 @@
 <title>BuzzQ - tap the buzz!</title>   
     <link rel="stylesheet" type="text/css" href="./buzzq.css" />  
     <link rel="stylesheet" href="./ui-lightness/jquery-ui-1.8.16.custom.css" />
-    <link rel="stylesheet" type="text/css" href="./ImageGallery/jquery.ad-gallery.css">
     <script type="text/javascript" src="./js/debug.js"></script>
     <script type="text/javascript" src="./js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="./js/jquery-ui-1.8.16.custom.min.js"></script>
     <script type="text/javascript" src="./js/BuzzQUI.js"></script>
     <script type="text/javascript" src="./js/wireBuzzQ.js"></script>
- <!--  
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-  --> 
-  <script type="text/javascript" src="./ImageGallery/jquery.ad-gallery.js"></script>
+
+  <script src="galleria/galleria-1.2.6.min.js"></script>
+    
  
     
   <script>
@@ -22,9 +20,27 @@
         var UI = new BuzzQUI();
         var wireBuzzQ = new WireBuzzQ();
         wireBuzzQ.connectHTML(UI);  
-    	debug.println("Document Ready");   
     });
-  </script> 
+  </script>
+
+ <style type="text/css">
+  * {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
+    color: #333;
+    line-height: 140%;
+  }
+  select, input, textarea {
+    font-size: 1em;
+  }
+  body {
+    padding: 30px;
+    font-size: 70%;
+    width: 800px;
+  }
+  </style>
+
+
+<!--
     <style type="text/css">
   * {
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
@@ -71,29 +87,11 @@
     padding: 0;
   }
 
-  #gallery {
-    padding: 30px;
-    background: #e1eef5;
-  }
-  #descriptions {
-    position: relative;
-    height: 50px;
-    background: #EEE;
-    margin-top: 10px;
-    width: 640px;
-    padding: 10px;
-    overflow: hidden;
-  }
-    #descriptions .ad-image-description {
-      position: absolute;
-    }
-      #descriptions .ad-image-description .ad-description-title {
-        display: block;
-      }
+
       
     
   </style>
-  
+-->
 </head>
   
 <body>
@@ -108,7 +106,7 @@
 
 <!-- end debug here -->
 
-<div id="BuzzQ-html:inputForm1" style="height: 30px; left: 200px; position: relative; top: 50px; width: 350px; z-index: 1;">
+<div id="BuzzQ-html:inputForm1" style="height: 30px; left: 200px; position: relative; top: 20px; width: 350px; z-index: 1;">
 <table>
 	<tr>
 		<td>
@@ -138,7 +136,8 @@
 	<ul>
 		<li><a href="#twitter-tab">Twitter</a></li>
 		<li><a href="#twitpic-tab">Twitpic</a></li>
-	
+        <li><a href="#flickr-tab">Flickr</a></li>
+
 	</ul>
    <span style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;color: #fff;'>
 	<div id="twitter-tab">
@@ -147,19 +146,19 @@
 	</span>
 	
 	<div id="twitpic-tab">
-		<div id="gallery" class="ad-gallery">
-      		<div class="ad-image-wrapper">	
-      		</div>
-      		<div class="ad-controls">
-      		</div>
-      		<div class="ad-nav">
-        		<div class="ad-thumbs">
-          			<ul id="twitpic-gallery-thumbs" class="ad-thumb-list" >
-          			</ul>
-        		</div>
-     		 </div>
-    	</div>	
+
+      <div id="twitpic-gallery">
+          
+      </div>
 	</div>
+
+    <div id="flickr-tab">
+        <div id="flickr-gallery">
+            
+        </div>
+        
+    </div>
+
 </div>
 
 </div><!-- End results -->
