@@ -1,7 +1,9 @@
 
 
 function BuzzQUI() {
-	this.searchString ="";	
+	this.searchString ="";
+    this.galleriaLoaded = false;
+
 }
 
 // Now we define the object BuzzQUI
@@ -139,20 +141,27 @@ BuzzQUI.prototype.goFind = function(event) {
           document.getElementById('twitter-tab').innerHTML = twitterResults+'<br>';
 
           if (flickrResults != '') {
-              Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+              if (!this.galleriaLoaded) {
+                  this.galleriaLoaded = true;
+                   Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+              }
                 $('#flickr-gallery').galleria({
-                width: 500,
+                width: 700,
                 height: 500
             });
           }
 
     	  if (twitpicResults != '') {
-              Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+              if (!this.galleriaLoaded) {
+                  this.galleriaLoaded = true;
+                   Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+              }
+              
                 $('#twitpic-gallery').galleria({
-                width: 500,
+                width: 700,
                 height: 500
             });
-   
+
     	  }
 
 	      return;

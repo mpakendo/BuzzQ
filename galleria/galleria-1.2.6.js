@@ -2221,7 +2221,6 @@ Galleria.prototype = {
                     $.each(['width', 'height'], function( i, m ) {
 
                         // first check if options is set
-
                         if ( options[ m ] && typeof options[ m ] === 'number' ) {
                             num[ m ] = options[ m ];
                         } else {
@@ -2239,7 +2238,6 @@ Galleria.prototype = {
                         $container[ m ]( num[ m ] );
 
                     });
-
                     return testHeight() && num.width && num.height > 10;
 
                 },
@@ -2264,7 +2262,7 @@ Galleria.prototype = {
                         Galleria.raise('Could not extract a stage height from the CSS. Traced height: ' + testHeight() + 'px.', true);
                     }
                 },
-                timeout: 10000
+                timeout: 30000
             });
         });
 

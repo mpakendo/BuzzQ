@@ -25,20 +25,33 @@ WireBuzzQ.prototype.connectHTML =  function (UI) {
     	debug.println('Showing Tab'+event.target.getAttribute('id'));
     });*/
 
-    /*
+/*
     $('#tabs').bind('tabsselect', function(event, ui) {
 
         // Objects available in the function context:
-       //debug.println('Tab select - ui.tab:' +ui.tab);     // anchor element of the selected (clicked) tab
-       //debug.println('Tab select - ui.panel:'+ ui.panel);   // element, that contains the selected/clicked tab contents
-       //debug.println('Tab select - ui.index:'+ ui.index);   // zero-based index of the selected (clicked) tab
-       
-       if (ui.index ==1) {
-    	   //var galleries = $('.ad-gallery').adGallery();
-    	 $('#twitpic-gallery-thumbs').width(9000);
-       }
+       debug.println('Tab select - ui.tab:' +ui.tab);     // anchor element of the selected (clicked) tab
+       debug.println('Tab select - ui.panel:'+ ui.panel);   // element, that contains the selected/clicked tab contents
+       debug.println('Tab select - ui.index:'+ ui.index);   // zero-based index of the selected (clicked) tab
 
-    });*/
+          if (ui.index ==1) { // Tab index 1: Twitpic
+            Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+                $('#twitpic-gallery').galleria({
+                width: 500,
+                height: 500
+            });
+          }
+
+    	  if (ui.index ==2) { // Tab index 2: Flickr
+              Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+                $('#flickr-gallery').galleria({
+                width: 500,
+                height: 500
+            });
+          }
+
+
+    });
+*/
 
 };
   

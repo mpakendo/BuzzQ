@@ -9,6 +9,8 @@ var urlmodule = require('url');
 var twitterCallComplete = false;
 var twitPicCallComplete = false;
 var flickrCallComplete = false;
+var CONFIGOPTIONFILENAME = './config.json';
+var Config = null;
 
 
 process.on('uncaughtException', function(e) {
@@ -19,7 +21,7 @@ FlickR API Key for BuzzQ: FOOBAR
 Secret: FOOBAROO
  */
 function serveFiles(request, response) {
-    console.log('http file serving starting...');
+    //console.log('http file serving starting...'+request.url);
 
 	var filePath = '.' + request.url;
 	if (filePath == './')
@@ -66,13 +68,13 @@ function serveFiles(request, response) {
 function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
       http.get(options,
             function(APIresponse) {
-              console.log("Calling API");
+              
               (APIresponse).setEncoding('utf8');
 
               (APIresponse).on('data',
                 function(chunk){
                   buffer = buffer + chunk; //need to buffer
-                   console.log('API RESPONSE SEGMENT, code:'+(APIresponse).statusCode);
+                   //console.log('API RESPONSE SEGMENT, code:'+(APIresponse).statusCode);
                  });
 
               (APIresponse).on('end',
@@ -89,6 +91,24 @@ http.createServer(function (request, response) {
     twitPicCallComplete = false;
     flickrCallComplete = false;
 
+    if (Config == null) {
+        path.exists(CONFIGOPTIONFILENAME, function (exists) {
+            if (!exists)
+              throw 'Config.json missing.';
+            else {
+              fs.readFile(CONFIGOPTIONFILENAME, function(error, data) {
+                if (error)
+                    throw error;
+                else {
+                    Config = eval('(' + data + ')');
+                    console.log('Read config file:'+Config.flickr.apiKey);
+                }
+              });
+            }
+        });
+    }
+
+
 	  var url = urlmodule.parse(request.url,true);
 	  	  
 	 /* console.log('req.url:'+request.url);
@@ -97,10 +117,13 @@ http.createServer(function (request, response) {
 	  console.log('Url.search:'+url.search);
 	  console.log('Url.query:'+url.query);*/
 
+
+
 	if (url.query.q == null) {
         serveFiles(request, response);
 	}
-	else { 
+	else {
+         console.log('Buzz Query for:'+url.query.q);
 		var twitterOptions = {
 				host: 'search.twitter.com',
 				port:80,
@@ -118,14 +141,14 @@ http.createServer(function (request, response) {
 
         var flickrOptions = {
             host: 'api.flickr.com',
-            path: '/services/rest/?&method=flickr.photos.search&api_key=FOOBAR&tags='+
+            path: '/services/rest/?&method=flickr.photos.search&api_key='+Config.flickr.apiKey+'&tags='+
                 encodeURIComponent(url.query.q)+'&format=json&nojsoncallback=1'
         };
 
 	var resultObjects = new Array();
 	
 	var endHandler = function() {
-			console.log ('END Handler!');
+			//console.log ('END Handler!');
 			if (twitterCallComplete && twitPicCallComplete && flickrCallComplete) {
 				try {	   
 						response.writeHead(200, {'Content-Type': 'text/plain'});
