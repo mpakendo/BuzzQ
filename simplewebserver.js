@@ -1,4 +1,12 @@
-
+/*
+simplewebserver.js: Combined web and application server using Node.js.
+The web server serves static files, the application server takes AJAX queries, calls three different API's and returns a JSON response.
+API's:
+ - Twitter
+ - Twitpic
+ - Flickr
+ 
+ */
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
@@ -6,9 +14,9 @@ var https = require('https');
 var util = require('util');
 var urlmodule = require('url');
 
-var twitterCallComplete = false;
-var twitPicCallComplete = false;
-var flickrCallComplete = false;
+var TwitterCallComplete = false;
+var TwitPicCallComplete = false;
+var FlickrCallComplete = false;
 var CONFIGOPTIONFILENAME = './config.json';
 var Config = null;
 
@@ -16,11 +24,9 @@ var Config = null;
 process.on('uncaughtException', function(e) {
     console.log(e);
 });
-/*
-FlickR API Key for BuzzQ: FOOBAR
-Secret: FOOBAROO
- */
-function serveFiles(request, response) {
+
+
+function serveFiles(request, response) { // HTTP web server request handler
     //console.log('http file serving starting...'+request.url);
 
 	var filePath = '.' + request.url;
@@ -65,7 +71,7 @@ function serveFiles(request, response) {
 
 
 
-function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
+function callApi(options, resultObjects, endCallback, errorCallback, buffer) { // HTTP calls to APIs
       http.get(options,
             function(APIresponse) {
               
@@ -74,7 +80,6 @@ function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
               (APIresponse).on('data',
                 function(chunk){
                   buffer = buffer + chunk; //need to buffer
-                   //console.log('API RESPONSE SEGMENT, code:'+(APIresponse).statusCode);
                  });
 
               (APIresponse).on('end',
@@ -86,10 +91,10 @@ function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
 }
 
 
-http.createServer(function (request, response) {
-    twitterCallComplete = false;
-    twitPicCallComplete = false;
-    flickrCallComplete = false;
+http.createServer(function (request, response) { // The combined web/application server
+    TwitterCallComplete = false;
+    TwitPicCallComplete = false;
+    FlickrCallComplete = false;
 
     if (Config == null) {
         path.exists(CONFIGOPTIONFILENAME, function (exists) {
@@ -117,8 +122,6 @@ http.createServer(function (request, response) {
 	  console.log('Url.search:'+url.search);
 	  console.log('Url.query:'+url.query);*/
 
-
-
 	if (url.query.q == null) {
         serveFiles(request, response);
 	}
@@ -136,8 +139,6 @@ http.createServer(function (request, response) {
 				path: '/2/tags/show.json?tag='+encodeURIComponent(url.query.q)
 		};
         // http://www.flickr.com/services/api/flickr.photos.search.html
-        // flickr API Key for BuzzQ: FOOBAR
-        // Secret: FOOBAROO
 
         var flickrOptions = {
             host: 'api.flickr.com',
@@ -148,8 +149,7 @@ http.createServer(function (request, response) {
 	var resultObjects = new Array();
 	
 	var endHandler = function() {
-			//console.log ('END Handler!');
-			if (twitterCallComplete && twitPicCallComplete && flickrCallComplete) {
+			if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete) {
 				try {	   
 						response.writeHead(200, {'Content-Type': 'text/plain'});
 						response.write(JSON.stringify(resultObjects),encoding='utf8');
@@ -177,13 +177,13 @@ http.createServer(function (request, response) {
                     });
               }
           }
-          twitPicCallComplete = true;
+          TwitPicCallComplete = true;
           endHandler();
     };
 
     var twitpicErrorCallback = function(err) {
         util.log('Twitpic Call Error'+err.message);
-        twitPicCallComplete = true;
+        TwitPicCallComplete = true;
         endHandler();
     };
 
@@ -201,13 +201,13 @@ http.createServer(function (request, response) {
                           });
                         }
         }
-        twitterCallComplete = true;
+        TwitterCallComplete = true;
         endHandler();
     };
 
     var twitterErrorCallback = function (err) {
        util.log('Twitter Error'+err.message);
-       twitterCallComplete = true;
+       TwitterCallComplete = true;
        endHandler();
     };
 
@@ -249,13 +249,13 @@ http://farm{farm-id}.static.flickr.com/{server-id}/{photo-id}_{photo-secret}.jpg
                });
              }
          }
-         flickrCallComplete = true;
+         FlickrCallComplete = true;
          endHandler();
      };
 
       var flickrErrorCallback = function (err) {
        util.log('Flickr Error'+err.message);
-       flickrCallComplete = true;
+       FlickrCallComplete = true;
        endHandler();
     };
 
