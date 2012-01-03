@@ -1,0 +1,15 @@
+BuzzQ takes a query keyword and passes this on to different web service API's:
+- Twitter
+- Twitpic
+- Flickr
+The application is still very experimental, consisting of:
+a) A UI built with Jquery-UI, Galleria (galleria.io) and very little glue
+b) a Node.js server with patches of code from everywhere.
+
+It currently serves as a learning testbed for a variety of technologies for me:
+- JavaScript
+- Node.js
+- Jquery
+- Jquery-UI
+
+
