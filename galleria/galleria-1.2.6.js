@@ -20,7 +20,7 @@ var undef,
 // internal constants
     VERSION = 1.26,
     DEBUG = true,
-    TIMEOUT = 30000,
+    TIMEOUT = 60000,
     DUMMY = false,
     NAV = navigator.userAgent.toLowerCase(),
     HASH = window.location.hash.replace(/#\//, ''),
@@ -2262,7 +2262,7 @@ Galleria.prototype = {
                         Galleria.raise('Could not extract a stage height from the CSS. Traced height: ' + testHeight() + 'px.', true);
                     }
                 },
-                timeout: 30000
+                timeout: 40000
             });
         });
 
@@ -4743,7 +4743,11 @@ Galleria.Picture.prototype = {
         // set a load timeout for debugging
         this.tid = window.setTimeout( (function(src) {
             return function() {
+                /* HACK
                 Galleria.raise('Image not loaded in ' + Math.round( TIMEOUT/1000 ) + ' seconds: '+ src);
+                 */
+
+                debug.printf('Image not loaded in ' + Math.round( TIMEOUT/1000 ) + ' seconds: '+ src);
             };
         }( src )), TIMEOUT );
 
