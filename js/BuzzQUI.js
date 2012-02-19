@@ -7,20 +7,27 @@ function BuzzQUI() {
     this.selectedDisplayTab = "twitter";
     this.hasDisplayedSources = {"twitter": false,
         "twitpic": false,
-        "flickr":  false}
+        "flickr":  false};
+    this.api = {
+        url:    "http://127.0.0.1:8125/",
+        queryEndPoint:  "query",
+        configEndPoint: "config"
+    };
+    this.debug = false;
 
 }
 
 // Now we define the object BuzzQUI
 (function() {
 
-
+/*
     function buzzQServiceAPI() {
 
         this.url = "http://127.0.0.1:8125/"; //need exact same url domain incl. port to avoid cross site scripting issues
         this.endPoint = "query";
 
     }
+    */
 
     function getAttrFromEvent (event, attr) {
         var id;
@@ -109,8 +116,8 @@ function BuzzQUI() {
     BuzzQUI.prototype.goFind = function(event) {
         var
             //id = getAttrFromEvent(event,"id"),
-            api = new buzzQServiceAPI(),
-            url,
+            //api = new buzzQServiceAPI(),
+            //url,
             callbackFunction,
             xmlHttp = getXmlHttpObject(),
             ui = this;
@@ -179,9 +186,9 @@ function BuzzQUI() {
                 return;
             };
 
-        url=api.url;
+   
         //url=url+api.endPoint+"?q="+this.searchString+"&s="+this.selectedQuerySource;
-        url=url+api.endPoint+"?q="+this.searchString;
+        url=this.api.url+this.api.queryEndPoint+"?q="+this.searchString;
 
         if (!(this.searchString == "")) {
 

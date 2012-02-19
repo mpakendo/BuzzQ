@@ -30,7 +30,6 @@ WireBuzzQ.prototype.connectHTML =  function (UI) {
    debug.println('Tab show - ui.index:'+ ui.index);   // zero-based index of the selected (clicked) tab
     debug.println('THIS type:'+this.constructor.name);
     */
-        debug.println('FOO: Tab show - ui.tab:' +ui.tab );
         UI.selectedDisplayTab = UI.querySources[ui.index];
         UI.displayGallery();
 });
@@ -63,6 +62,16 @@ WireBuzzQ.prototype.connectHTML =  function (UI) {
     });
     */
 
+    debug.println('CALLING JSON API' +UI.api.url+UI.api.configEndPoint);
+    $.getJSON(UI.api.url+UI.api.configEndPoint, function(configData) { alert("Config data, debug="+configData.debugOn);
+      if (configData.debugOn) {
+        $("#BuzzQ-html-debugZone").html("<table><tr>" +
+            "<td><a href='#' onclick='{return debug.displayDebugInfo();}'>Debug Information</a></td>" +
+            "<td><a href='#' onclick='{return debug.clearDebugInfo();}'>Clear Debug Information</a></td>" +
+            "</tr></table><div style='background:green' id='BuzzQ-html-displayDebugInfo'></div>"
+            );
+      }
+    });
 
 };
   

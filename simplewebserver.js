@@ -19,6 +19,11 @@ var TwitPicCallComplete = false;
 var FlickrCallComplete = false;
 var CONFIGOPTIONFILENAME = './config.json';
 var Config = null;
+var API = {
+    url:    "http://127.0.0.1:8125/",
+    port: 8125,
+    queryEndPoint:  "query",
+    configEndPoint: "config"};
 
 
 process.on('uncaughtException', function(e) {
@@ -107,6 +112,7 @@ http.createServer(function (request, response) { // The combined web/application
                     else {
                         Config = eval('(' + data + ')');
                         console.log('Read config file:'+Config.flickr.apiKey);
+                        console.log('Read config file:'+Config.debug.on);
                     }
                 });
             }
@@ -116,16 +122,24 @@ http.createServer(function (request, response) { // The combined web/application
 
     var url = urlmodule.parse(request.url,true);
 
-    /*console.log('req.url:'+request.url);
-     console.log('Url.href:'+url.href);
-     console.log('Url.host:'+url.host);
-     console.log('Url.search:'+url.search);
-     console.log('Url.query:'+url.query);*/
 
-    if (url.query.q == null) {
+    if (url.pathname == '/'+API.configEndPoint) {
+
+        response.writeHead(200, {'Content-Type': 'text/plain'});
+        response.end(JSON.stringify(Config.debug),encoding='utf8');
+   
+    }
+    else if (url.query.q == null) {
         serveFiles(request, response);
     }
     else {
+        console.log('req.url:'+request.url);
+             console.log('Url.href:'+url.href);
+             console.log('Url.host:'+url.host);
+             console.log('Url.search:'+url.search);
+             console.log('Url.query:'+url.query);
+            console.log('Url.pathname:' + url.pathname);
+
         console.log('Buzz Query for:'+url.query.q);
         var twitterOptions = {
             host: 'search.twitter.com',
@@ -353,7 +367,7 @@ http.createServer(function (request, response) { // The combined web/application
 
     }
 
-}).listen(8125);
+}).listen(API.port);
 
-console.log('Server running at http://127.0.0.1:8125/');
+console.log('Server running at '+API.url);
 
