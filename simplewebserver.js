@@ -311,7 +311,7 @@ http.createServer(function (request, response) { // The combined web/application
 
     }
 
-}).listen(process.env.PORT || 8125);
+}).listen(process.env.PORT);
 
-console.log('Server running');
+console.log('Server running on port:'+process.env.PORT);
 
