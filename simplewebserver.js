@@ -18,10 +18,11 @@ var TwitterCallComplete = false;
 var TwitPicCallComplete = false;
 var FlickrCallComplete = false;
 var CONFIGOPTIONFILENAME = './config.json';
-var Config = null;
+var Config = {
+    flickr: {apiKey:null},
+    debug: {debugOn:false},
+    api: {url:null}};
 var API = {
-    url:    "http://127.0.0.1:8125/",
-    port: 8125,
     queryEndPoint:  "query",
     configEndPoint: "config"};
 
@@ -101,22 +102,31 @@ http.createServer(function (request, response) { // The combined web/application
     TwitPicCallComplete = false;
     FlickrCallComplete = false;
 
-    if (Config == null) {
-        path.exists(CONFIGOPTIONFILENAME, function (exists) {
-            if (!exists)
-                throw 'Config.json missing.';
-            else {
-                fs.readFile(CONFIGOPTIONFILENAME, function(error, data) {
-                    if (error)
-                        throw error;
-                    else {
-                        Config = eval('(' + data + ')');
-                        console.log('Read config file:'+Config.flickr.apiKey);
-                        console.log('Read config file:'+Config.debug.on);
-                    }
-                });
-            }
-        });
+    if (Config.flickr.apiKey == null) {
+        if (process.env.FLICKR_APIKEY  && process.env.DEBUG_DEBUGON) {
+            Config.flickr.apiKey = process.env.FLICKR_APIKEY;
+            Config.debug.debugOn = process.env.DEBUG_DEBUGON;
+            Config.api.url = process.env.API_URL;
+             console.log('Read config var:'+Config.flickr.apiKey);
+             console.log('Read config var:'+Config.debug.debugOn);
+             console.log('Read config var:'+Config.api.url);
+        }
+        else
+            path.exists(CONFIGOPTIONFILENAME, function (exists) {
+                if (!exists)
+                    throw 'Config.json missing and/or environment settings missing.';
+                else {
+                    fs.readFile(CONFIGOPTIONFILENAME, function(error, data) {
+                        if (error)
+                            throw error;
+                        else {
+                            Config = eval('(' + data + ')');
+                            console.log('Read config file:'+Config.flickr.apiKey);
+                            console.log('Read config file:'+Config.debug.debugOn);
+                        }
+                    });
+                }
+            });
     }
 
 
@@ -126,19 +136,21 @@ http.createServer(function (request, response) { // The combined web/application
     if (url.pathname == '/'+API.configEndPoint) {
 
         response.writeHead(200, {'Content-Type': 'text/plain'});
-        response.end(JSON.stringify(Config.debug),encoding='utf8');
+        response.end(JSON.stringify(Config),encoding='utf8');
    
     }
     else if (url.query.q == null) {
         serveFiles(request, response);
     }
     else {
+        /*
         console.log('req.url:'+request.url);
              console.log('Url.href:'+url.href);
              console.log('Url.host:'+url.host);
              console.log('Url.search:'+url.search);
              console.log('Url.query:'+url.query);
             console.log('Url.pathname:' + url.pathname);
+            */
 
         console.log('Buzz Query for:'+url.query.q);
         var twitterOptions = {
@@ -161,87 +173,19 @@ http.createServer(function (request, response) { // The combined web/application
 
         var resultObjects = new Array();
 
-        var validatedResultObjects = new Array();
 
-        /* Send a HEAD request
-         var http = require('http');
-         var options = {method: 'HEAD', host: 'stackoverflow.com', port: 80, path: '/'};
-         var req = http.request(options, function(res) {
-         console.log('STATUS: '+ res.statusCode);
-         console.log(JSON.stringify(res.headers));
-         }
-         );
-         req.end();
-         */
+   
 
-        var validatedImageUrlCount = 0;
-
-        function validateImageUrls() {
-
-            for (var i=0;i<resultObjects.length;i++) {
-                (function() { //Need new block here
-                    var parsedUrl;
-                    var options;
-                    var req;
-                    var resultObject = resultObjects[i];
-                    parsedUrl = urlmodule.parse(resultObject.imageUrl);
-                    options = {
-                        method: 'HEAD',
-                        host: parsedUrl.host,
-                        port: 80,
-                        path: parsedUrl.pathname+(parsedUrl.search?parsedUrl.search:'')+(parsedUrl.hash?parsedUrl.hash:'')};
-                    req = http.request(options, function(res) {
-                            //console.log('Validating URL:'+res.statusCode+'   '+options.host+options.path);
-                            if (res.statusCode != 404) {
-                                validatedResultObjects.push(resultObject);
-                                //console.log('ADD:'+resultObject);
-                            }
-                            else
-                                console.log('ISSUE with URL:'+ resultObject.imageUrl +'STATUS: '+ res.statusCode);
-                            validatedImageUrlCount++;
-                        }
-                    );
-                    req.on('error', function(err) {
-                        util.log('Error validating URL:'+resultObjects[i].imageUrl+' ERR:'+err.message);
-                        validatedImageUrlCount++;
-                    });
-                    req.end();
-                })();
-            }
-        }
-
-        function ajaxResponseWriter() {
-            //console.log('In AJAX RESPONSE WRITER:'+response+'   '+validatedResultObjects.length);
-            try {
+        function endHandler() {
+            if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete) {
+                try {
                 response.writeHead(200, {'Content-Type': 'text/plain'});
-                //response.write(JSON.stringify(validatedResultObjects),encoding='utf8');
                 response.write(JSON.stringify(resultObjects),encoding='utf8');
             }
             catch (e) {
                 console.log('EXCEPTION in END Handler:'+e);
             }
             response.end();
-        }
-
-        function endHandlerFinish() {
-            //console.log('Entering Timeout Call for END Handler Finish - validatedImageUrlCount:'+validatedImageUrlCount+' resultObjects.length:'+resultObjects.length);
-
-            if (validatedImageUrlCount != resultObjects.length) {
-                setTimeout(endHandlerFinish,500);
-            }
-            else
-                ajaxResponseWriter();
-        }
-
-        function endHandler() {
-            if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete     /*true */ ) {
-                /*
-                 //EITHER:
-                 validateImageUrls();
-                 endHandlerFinish();
-                 //OR:
-                 */
-                ajaxResponseWriter();
 
             }
         }
@@ -367,7 +311,7 @@ http.createServer(function (request, response) { // The combined web/application
 
     }
 
-}).listen(API.port);
+}).listen(process.env.PORT || 8125);
 
-console.log('Server running at '+API.url);
+console.log('Server running');
 

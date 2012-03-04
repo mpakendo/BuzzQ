@@ -9,7 +9,7 @@ function BuzzQUI() {
         "twitpic": false,
         "flickr":  false};
     this.api = {
-        url:    "http://127.0.0.1:8125/",
+        url: document.location,
         queryEndPoint:  "query",
         configEndPoint: "config"
     };
@@ -20,15 +20,7 @@ function BuzzQUI() {
 // Now we define the object BuzzQUI
 (function() {
 
-/*
-    function buzzQServiceAPI() {
-
-        this.url = "http://127.0.0.1:8125/"; //need exact same url domain incl. port to avoid cross site scripting issues
-        this.endPoint = "query";
-
-    }
-    */
-
+    debug.println("document.location:"+document.location);
     function getAttrFromEvent (event, attr) {
         var id;
         if (!event) event = window.event;
@@ -114,11 +106,7 @@ function BuzzQUI() {
     };
 
     BuzzQUI.prototype.goFind = function(event) {
-        var
-            //id = getAttrFromEvent(event,"id"),
-            //api = new buzzQServiceAPI(),
-            //url,
-            callbackFunction,
+        var callbackFunction,
             xmlHttp = getXmlHttpObject(),
             ui = this;
 
@@ -155,7 +143,6 @@ function BuzzQUI() {
                             twitterResults += (newText+'<br>');
                         }
 
-
                         twitterResults += (resultObjects[i].timestamp+'<br>');
                         twitterResults += (resultObjects[i].user+'</p>');
                         // <img src="angry.gif" alt="Angry face" title="Angry face" />
@@ -182,25 +169,16 @@ function BuzzQUI() {
                 debug.println("Calling Display Gallery in Callback");
                 ui.displayGallery();
 
-
                 return;
             };
 
-   
-        //url=url+api.endPoint+"?q="+this.searchString+"&s="+this.selectedQuerySource;
+
         url=this.api.url+this.api.queryEndPoint+"?q="+this.searchString;
 
         if (!(this.searchString == "")) {
-
-
-
             $('#twitter-tab').html('');
             $('#twitpic-tab').html('<div id="twitpic-gallery"></div>');
             $('#flickr-tab').html('<div id="flickr-gallery"></div>');
-
-
-
-
 
             invokeAJAXCall(xmlHttp,url,callbackFunction);
         }
