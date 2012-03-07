@@ -6,10 +6,14 @@ The application is still very experimental, consisting of:
 a) A UI built with Jquery-UI, Galleria (galleria.io) and very little glue
 b) a Node.js server with patches of code from everywhere.
 
-It currently serves as a learning testbed for a variety of technologies for me:
+It currently serves as a learning testbed for a variety of technologies:
 - JavaScript
 - Node.js
 - Jquery
 - Jquery-UI
+
+See http://blooming-mountain-1859.herokuapp.com/
+
+There are known bugs.
 
 
