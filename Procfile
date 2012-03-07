@@ -1,1 +1,1 @@
-buzzq: node simplewebserver.js
+web: node simplewebserver.js
