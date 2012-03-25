@@ -1,3 +1,5 @@
-config.json
+node_modules
+.config_bsh
+.config_heroku
 js/apiExperiments.js
 

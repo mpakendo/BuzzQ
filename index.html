@@ -3,8 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BuzzQ - tap the buzz!</title>   
-    <link rel="stylesheet" type="text/css" href="./buzzq.css" />  
+    <link rel="stylesheet" type="text/css" href="./buzzq.css" />
+ <!--
     <link rel="stylesheet" href="./ui-lightness/jquery-ui-1.8.16.custom.css" />
+ -->
+    <link rel="stylesheet" href="./ui-darkness/jquery-ui-1.8.16.custom.css" />
     <script type="text/javascript" src="./js/debug.js"></script>
     <script type="text/javascript" src="./js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="./js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -24,7 +27,7 @@
  <style type="text/css">
   * {
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
-    color: #333;
+    color: #777777;
     line-height: 140%;
   }
   select, input, textarea {
@@ -39,81 +42,26 @@
 
   </style>
 
-
-<!--
-    <style type="text/css">
-  * {
-    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
-    color: #333;
-    line-height: 140%;
-  }
-  #gallery { width:780px; height:500px; float:right; position:relative; border:10px solid #141414 }
-#galleria { width:100%; height:100%; background:#000 }
-  select, input, textarea {
-    font-size: 1em;
-  }
-  body {
-    padding: 30px;
-    font-size: 70%;
-    width: 800px;
-  }
-  h2 {
-    margin-top: 1.2em;
-    margin-bottom: 0;
-    padding: 0;
-    border-bottom: 1px dotted #dedede;
-  }
-  h3 {
-    margin-top: 1.2em;
-    margin-bottom: 0;
-    padding: 0;
-  }
-  .example {
-    border: 1px solid #CCC;
-    background: #f2f2f2;
-    padding: 10px;
-  }
-  /*
-  ul {
-    list-style-image:url(list-style.gif);
-  }*/
-  pre {
-    font-family: "Lucida Console", "Courier New", Verdana;
-    border: 1px solid #CCC;
-    background: #f2f2f2;
-    padding: 10px;
-  }
-  code {
-    font-family: "Lucida Console", "Courier New", Verdana;
-    margin: 0;
-    padding: 0;
-  }
-
-
-      
-    
-  </style>
--->
 </head>
   
-<body>
+<body  style="background: rgb(255, 255, 255) url(images/PhotoGray_browser_bg-2.jpg) repeat scroll top left; margin: 0pt;>
 <!--  debug controls -->
 <div id="BuzzQ-html-debugZone"></div>
 
 
 
-<div id="BuzzQ-html:inputForm1" style="height: 32px; left: 200px; position: relative; top: 0px; width: 350px; z-index: 1;">
+<div id="BuzzQ-html:inputForm1" style="height: 50px; left: 0px; position: relative; top: 0px; width: 750px; z-index: 1;">
+
 <table>
 	<tr>
-		<td>
-	<h1> BuzzQ - Tap the buzz -  </h1> 
-		</td>
-	</tr>
-	<tr>
-		<td> <input id="BuzzQ-html-searchString" name="searchWords" type ="text" size="40"/> </td>
+		<td> <h1 style="color:#ffffff"> BuzzQ: Tap the buzz! </h1> </td>
+        <td> <div id="BuzzQ-html:padding" style="height: 50px; left: 0px; position: relative; top: 0px; width: 60px; z-index: 1;"></div></td>
+        <td> <input id="BuzzQ-html-searchString" name="searchWords" type ="text" size="50"/> </td>
 		<td> <input type="button" id="BuzzQ-html-searchAction" value="Go Find"/> </td>
 	</tr>
 </table>
+
+
 </div>
 
 <script>
@@ -126,14 +74,14 @@
 
 <div class="results">
 
-<div id="tabs" style="position: relative; top: 60px; width: 750px; z-index: 1;">
+<div id="tabs" style="position: relative; top: 0px; width: 750px; z-index: 1;">
 	<ul>
 		<li><a href="#twitter-tab">Twitter</a></li>
 		<li><a href="#twitpic-tab">Twitpic</a></li>
         <li><a href="#flickr-tab">Flickr</a></li>
 
 	</ul>
-   <span style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;color: #fff;'>
+   <span style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;color: #ffffff;'>
 	<div id="twitter-tab">
 
 	</div>
