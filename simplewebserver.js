@@ -101,7 +101,6 @@ http.createServer(function (request, response) { // The combined web/application
     TwitterCallComplete = false;
     TwitPicCallComplete = false;
     FlickrCallComplete = false;
-
     if (Config.flickr.apiKey == null) {
         if (process.env.FLICKR_APIKEY  && process.env.DEBUG_DEBUGON) {
             Config.flickr.apiKey = process.env.FLICKR_APIKEY;
@@ -112,9 +111,10 @@ http.createServer(function (request, response) { // The combined web/application
              console.log('Read config var:'+Config.api.url);
         }
         else
+        {   console.log('Environment variables for configuration not set, reading config.json.');
             path.exists(CONFIGOPTIONFILENAME, function (exists) {
                 if (!exists)
-                    throw 'Config.json missing and/or environment settings missing.';
+                    throw 'File config.json missing and/or environment settings missing.';
                 else {
                     fs.readFile(CONFIGOPTIONFILENAME, function(error, data) {
                         if (error)
@@ -127,6 +127,7 @@ http.createServer(function (request, response) { // The combined web/application
                     });
                 }
             });
+        }
     }
 
 

@@ -124,11 +124,14 @@ function BuzzQUI() {
                 for (var i = 0;i<resultObjects.length;i++) {
 
                     if (resultObjects[i].source == "twitter") {
-                        var linkPattern = new RegExp("http://([.]|[^ ])*","g");
+                        var linkPattern = new RegExp("((http)|(https))://([.]|[^ ])*","g");
                         var links = resultObjects[i].text.match(linkPattern);
                         var newText = resultObjects[i].text;
                         twitterResults += '<p>';
-                        twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" /> <br>');
+                        twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" />');
+                        // https://twitter.com/#!/timoreilly
+                        twitterResults += ('<a href=\"https://twitter.com/#!/'+resultObjects[i].user+'\" target=\"_blank\"/>');
+                        twitterResults += (' @'+resultObjects[i].user+'</a> <br>');
 
                         if (links) {
                             //<a href="http://URL" target="_blank">TEXT</a>
@@ -143,8 +146,7 @@ function BuzzQUI() {
                             twitterResults += (newText+'<br>');
                         }
 
-                        twitterResults += (resultObjects[i].timestamp+'<br>');
-                        twitterResults += (resultObjects[i].user+'</p>');
+                        twitterResults += (resultObjects[i].timestamp+'</p>');
                         // <img src="angry.gif" alt="Angry face" title="Angry face" />
                     }
                     else if (resultObjects[i].source == "twitpic") {
