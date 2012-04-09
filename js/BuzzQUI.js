@@ -3,11 +3,12 @@
 function BuzzQUI() {
     this.searchString ="";
     this.galleriaLoaded = false;
-    this.querySources = ["twitter","twitpic","flickr"]; // order needs to match the order in the HTML tabs
+    this.querySources = ["twitter","twitpic","flickr","instagram"]; // order needs to match the order in the HTML tabs
     this.selectedDisplayTab = "twitter";
     this.hasDisplayedSources = {"twitter": false,
         "twitpic": false,
-        "flickr":  false};
+        "flickr":  false,
+        "instagram": false};
     this.api = {
         url: document.location,
         queryEndPoint:  "query",
@@ -20,7 +21,7 @@ function BuzzQUI() {
 // Now we define the object BuzzQUI
 (function() {
 
-    debug.println("document.location:"+document.location);
+    //debug.println("document.location:"+document.location);
     function getAttrFromEvent (event, attr) {
         var id;
         if (!event) event = window.event;
@@ -72,21 +73,24 @@ function BuzzQUI() {
         this.searchString = $("#"+id).val();
         this.hasDisplayedSources = {'twitter': false,
             'twitpic': false,
-            'flickr':  false};
+            'flickr':  false,
+            'instagram': false};
     };
 
 
 
     BuzzQUI.prototype.displayGallery = function() {
         debug.println("DISPLAY GALLERY:"+JSON.stringify(this.hasDisplayedSources)+ " SEL.TAB:"+this.selectedDisplayTab);
-        if (!this.galleriaLoaded && ((this.selectedDisplayTab == 'flickr') || (this.selectedDisplayTab == 'twitpic'))) {
+        if (!this.galleriaLoaded &&
+            ((this.selectedDisplayTab == 'flickr') ||
+             (this.selectedDisplayTab == 'twitpic')||
+             (this.selectedDisplayTab == 'instagram')  )) {
             this.galleriaLoaded = true;
             Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
         }
 
         if (this.selectedDisplayTab == 'flickr' && !this.hasDisplayedSources['flickr']) {
             debug.println("OPEN FLICKR GALLERY.");
-
             this.hasDisplayedSources['flickr']=true;
             $('#flickr-gallery').galleria({
                 width: 700,
@@ -96,9 +100,17 @@ function BuzzQUI() {
 
         if (this.selectedDisplayTab == 'twitpic' && !this.hasDisplayedSources['twitpic']) {
             debug.println("OPEN TWITPIC GALLERY.");
-
             this.hasDisplayedSources['twitpic']=true;
             $('#twitpic-gallery').galleria({
+                width: 700,
+                height: 500
+            });
+        }
+
+         if (this.selectedDisplayTab == 'instagram' && !this.hasDisplayedSources['instagram']) {
+            debug.println("OPEN INSTAGRAM GALLERY.");
+            this.hasDisplayedSources['instagram']=true;
+            $('#instagram-gallery').galleria({
                 width: 700,
                 height: 500
             });
@@ -120,60 +132,62 @@ function BuzzQUI() {
                 var twitterResults = '';
                 var twitpicResults ='';
                 var flickrResults = '';
+                var instagramResults = '';
 
                 for (var i = 0;i<resultObjects.length;i++) {
+                    switch (resultObjects[i].source) {
+                        case "twitter":
+                            var linkPattern = new RegExp("((http)|(https))://([.]|[^ ])*","g");
+                            var links = resultObjects[i].text.match(linkPattern);
+                            var newText = resultObjects[i].text;
+                            twitterResults += '<p>';
+                            twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" />');
+                            // https://twitter.com/#!/timoreilly
+                            twitterResults += ('<a href=\"https://twitter.com/#!/'+resultObjects[i].user+'\" target=\"_blank\"/>');
+                            twitterResults += (' @'+resultObjects[i].user+'</a> <br>');
 
-                    if (resultObjects[i].source == "twitter") {
-                        var linkPattern = new RegExp("((http)|(https))://([.]|[^ ])*","g");
-                        var links = resultObjects[i].text.match(linkPattern);
-                        var newText = resultObjects[i].text;
-                        twitterResults += '<p>';
-                        twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" />');
-                        // https://twitter.com/#!/timoreilly
-                        twitterResults += ('<a href=\"https://twitter.com/#!/'+resultObjects[i].user+'\" target=\"_blank\"/>');
-                        twitterResults += (' @'+resultObjects[i].user+'</a> <br>');
-
-                        if (links) {
-                            //<a href="http://URL" target="_blank">TEXT</a>
-                            for (var j = 0; j<links.length; j++) {
-                                var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\"/>' + links[j] +'</a>';
-                                newText = newText.replace(links[j],htmlLink);
+                            if (links) {
+                                //<a href="http://URL" target="_blank">TEXT</a>
+                                for (var j = 0; j<links.length; j++) {
+                                    var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\"/>' + links[j] +'</a>';
+                                    newText = newText.replace(links[j],htmlLink);
+                                }
+                                twitterResults += newText;
+                                twitterResults += '<br>';
+                            } else {
+                                twitterResults += (newText+'<br>');
                             }
-                            twitterResults += newText;
-                            twitterResults += '<br>';
-
-                        } else {
-                            twitterResults += (newText+'<br>');
-                        }
-
-                        twitterResults += (resultObjects[i].timestamp+'</p>');
-                        // <img src="angry.gif" alt="Angry face" title="Angry face" />
-                    }
-                    else if (resultObjects[i].source == "twitpic") {
-                        twitpicResults ='<img src=\"'+resultObjects[i].imageUrl+'\" ';
-                        twitpicResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].timestamp + ' ';
-                        twitpicResults += resultObjects[i].user + '\" class=\"image'+i+'\">';
-                        $('#twitpic-gallery').append(twitpicResults);
-
-                    }
-                    else if (resultObjects[i].source == "flickr") {
-
-                        flickrResults ='<img src=\"'+resultObjects[i].imageUrl+'\" ';
-                        flickrResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].text + ' ';
-                        flickrResults += resultObjects[i].user + '\" class=\"image'+i+'\">';
-                        $('#flickr-gallery').append(flickrResults);
+                            twitterResults += (resultObjects[i].timestamp+'</p>');
+                            break;
+                        case "twitpic":
+                            twitpicResults ='<img src=\"'+resultObjects[i].imageUrl+'\" ';
+                            twitpicResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].timestamp + ' ';
+                            twitpicResults += resultObjects[i].user + '\" class=\"image'+i+'\">';
+                            $('#twitpic-gallery').append(twitpicResults);
+                            break;
+                        case "flickr":
+                            flickrResults ='<img src=\"'+resultObjects[i].imageUrl+'\" ';
+                            flickrResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].text + ' ';
+                            flickrResults += resultObjects[i].user + '\" class=\"image'+i+'\">';
+                            $('#flickr-gallery').append(flickrResults);
+                            break;
+                        case "instagram":
+                            instagramResults ='<img src=\"'+resultObjects[i].imageUrl+'\" ';
+                            instagramResults += 'title = \"'+ resultObjects[i].text + '\" alt=\"'+ resultObjects[i].timestamp + ' ';
+                            instagramResults += resultObjects[i].user + '\" class=\"image'+i+'\">';
+                            $('#instagram-gallery').append(instagramResults);
+                            break;
+                        default:
 
                     }
                 }
 
                 //$('#twitter-tab').append(twitterResults); // HUH? Jquery version does not work properly. But getElementById does.
                 document.getElementById('twitter-tab').innerHTML = twitterResults+'<br>';
-                debug.println("Calling Display Gallery in Callback");
                 ui.displayGallery();
 
                 return;
             };
-
 
         url=this.api.url+this.api.queryEndPoint+"?q="+this.searchString;
 
@@ -181,11 +195,10 @@ function BuzzQUI() {
             $('#twitter-tab').html('');
             $('#twitpic-tab').html('<div id="twitpic-gallery"></div>');
             $('#flickr-tab').html('<div id="flickr-gallery"></div>');
+            $('#instagram-tab').html('<div id="instagram-gallery"></div>');
 
             invokeAJAXCall(xmlHttp,url,callbackFunction);
         }
-
     };
-
 
 }) ();

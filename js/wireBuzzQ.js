@@ -24,7 +24,6 @@ function WireBuzzQ() {
         });
 
         $('#tabs').bind('tabsshow', function(event, ui) {
-
             UI.selectedDisplayTab = UI.querySources[ui.index];
             UI.displayGallery();
         });
@@ -35,7 +34,7 @@ function WireBuzzQ() {
                 $("#BuzzQ-html-debugZone").html("<table><tr>" +
                     "<td><a href='#' onclick='{return debug.displayDebugInfo();}'>Debug Information</a></td>" +
                     "<td><a href='#' onclick='{return debug.clearDebugInfo();}'>Clear Debug Information</a></td>" +
-                    "</tr></table><div style='background:green' id='BuzzQ-html-displayDebugInfo'></div>"
+                    "</tr></table><div style='background:white' id='BuzzQ-html-displayDebugInfo'></div>"
                 );
             }
         });
