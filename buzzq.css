@@ -1,1 +1,5 @@
 @CHARSET "UTF-8";
+
+#twittercontent p{text-indent:20px;text-align:justify;}
+#pagingControls ul{display:inline;padding-left:0.5em}
+#pagingControls li{display:inline;padding:0 0.5em}

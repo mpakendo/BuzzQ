@@ -15,11 +15,13 @@ function BuzzQUI() {
         configEndPoint: "config"
     };
     this.debug = false;
-
 }
+
+pager = new Imtech.Pager();
 
 // Now we define the object BuzzQUI
 (function() {
+
 
     //debug.println("document.location:"+document.location);
     function getAttrFromEvent (event, attr) {
@@ -45,7 +47,7 @@ function BuzzQUI() {
             try {
                 xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
             }
-            catch (e) {
+            catch (ex) {
                 xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
             }
         }
@@ -80,7 +82,7 @@ function BuzzQUI() {
 
 
     BuzzQUI.prototype.displayGallery = function() {
-        debug.println("DISPLAY GALLERY:"+JSON.stringify(this.hasDisplayedSources)+ " SEL.TAB:"+this.selectedDisplayTab);
+        //debug.println("DISPLAY GALLERY:"+JSON.stringify(this.hasDisplayedSources)+ " SEL.TAB:"+this.selectedDisplayTab);
         if (!this.galleriaLoaded &&
             ((this.selectedDisplayTab == 'flickr') ||
              (this.selectedDisplayTab == 'twitpic')||
@@ -90,7 +92,7 @@ function BuzzQUI() {
         }
 
         if (this.selectedDisplayTab == 'flickr' && !this.hasDisplayedSources['flickr']) {
-            debug.println("OPEN FLICKR GALLERY.");
+            //debug.println("OPEN FLICKR GALLERY.");
             this.hasDisplayedSources['flickr']=true;
             $('#flickr-gallery').galleria({
                 width: 700,
@@ -99,7 +101,7 @@ function BuzzQUI() {
         }
 
         if (this.selectedDisplayTab == 'twitpic' && !this.hasDisplayedSources['twitpic']) {
-            debug.println("OPEN TWITPIC GALLERY.");
+            //debug.println("OPEN TWITPIC GALLERY.");
             this.hasDisplayedSources['twitpic']=true;
             $('#twitpic-gallery').galleria({
                 width: 700,
@@ -108,7 +110,7 @@ function BuzzQUI() {
         }
 
          if (this.selectedDisplayTab == 'instagram' && !this.hasDisplayedSources['instagram']) {
-            debug.println("OPEN INSTAGRAM GALLERY.");
+            //debug.println("OPEN INSTAGRAM GALLERY.");
             this.hasDisplayedSources['instagram']=true;
             $('#instagram-gallery').galleria({
                 width: 700,
@@ -129,7 +131,7 @@ function BuzzQUI() {
         callbackFunction =
             function () {
                 var resultObjects = eval('('+xmlHttp.responseText+')');
-                var twitterResults = '';
+                var twitterResults = '<div id=\"twittercontent\">';
                 var twitpicResults ='';
                 var flickrResults = '';
                 var instagramResults = '';
@@ -183,7 +185,12 @@ function BuzzQUI() {
                 }
 
                 //$('#twitter-tab').append(twitterResults); // HUH? Jquery version does not work properly. But getElementById does.
-                document.getElementById('twitter-tab').innerHTML = twitterResults+'<br>';
+                document.getElementById('twitter-tab').innerHTML = twitterResults+'</div> <div id=\"pagingControls\"></div>';
+
+                pager.paragraphsPerPage = 4; // set amount elements per page
+                pager.pagingContainer = $('#twittercontent'); // set of main container
+                pager.paragraphs = $('p', pager.pagingContainer); // set of required containers
+                pager.showPage(1);
                 ui.displayGallery();
 
                 return;

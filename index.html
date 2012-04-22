@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>BuzzQ - tap the buzz!</title>   
@@ -11,13 +11,15 @@
     <script type="text/javascript" src="./js/debug.js"></script>
     <script type="text/javascript" src="./js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="./js/jquery-ui-1.8.16.custom.min.js"></script>
-    <script type="text/javascript" src="galleria/galleria-1.2.6.js"></script>
+    <script type="text/javascript" src="./galleria/galleria-1.2.6.js"></script>
+    <script type="text/javascript" src="./js/imtech_pager.js"></script>
    
     <script type="text/javascript" src="./js/BuzzQUI.js"></script>
     <script type="text/javascript" src="./js/wireBuzzQ.js"></script>
       
   <script>
-    $(document).ready(function() { 
+    $(document).ready(function() {
+
         var UI = new BuzzQUI();
         var wireBuzzQ = new WireBuzzQ();
         wireBuzzQ.connectHTML(UI);  
@@ -38,9 +40,7 @@
     font-size: 70%;
     width: 800px;
   }
-
-
-  </style>
+</style>
 
 </head>
   
@@ -69,7 +69,7 @@
 	$(function() {
 		$( "#tabs" ).tabs();
 	});
-	</script>
+</script>
 
 
 
@@ -85,8 +85,32 @@
 
 	</ul>
    <span style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;color: #ffffff;'>
-	<div id="twitter-tab">
-	</div>
+	<div id="twitter-tab" style="position: relative; top: 0px; width: 700px; height: 500px; z-index: 1;">
+        <div id="twittercontent">
+            <p>
+            <br>
+            <b>Tap into the social media buzz!</b>
+            <br> <br>
+            Just enter a tag and query several social media services at once.
+            Browse through simple image galleries and a paginated twitter stream to screen the conversation!
+            <br> <br>
+            <b>Technical background:</b>
+            <br> <br>
+            This simple app takes a keyword and queries several social media services in parallel.
+            Currently the app has integrated Twitter, Flickr, Twitpic and Instagram through their REST APIs.
+            These are called via a simple node.js server which passes the results back to the browser app.
+
+            This was made possible by the use of <a href="http://www.jquery.com" target="_blank">JQuery</a>,
+            <a href="http://www.jqueryui.com/home" target="_blank">JQuery-UI</a>,
+            <a href="http://galleria.aino.se" target="_blank">Galleria</a>, and
+            <a href="http://www.script-tutorials.com/how-to-create-easy-pagination-with-jquery/" target="_blank">Imtech pager</a>.
+
+            Currently the node.js app is hosted at <a href="http://www.heroku.com" target="_blank">Heroku</a>.
+            <br>  <br>
+            This was done purely as a hobby hack. There are known bugs.
+            </p>
+        </div>
+    </div>
 	</span>
 	
 	<div id="twitpic-tab">
