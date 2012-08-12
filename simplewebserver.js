@@ -13,6 +13,7 @@ var path = require('path');
 var https = require('https');
 var util = require('util');
 var urlmodule = require('url');
+var static = require('node-static');
 
 var TwitterCallComplete = false;
 var TwitPicCallComplete = false;
@@ -33,6 +34,7 @@ process.on('uncaughtException', function(e) {
     util.log('UNCAUGHT EXCEPTION:'+ e);
 });
 
+var staticHttpServer = new static.Server('./');
 
 function serveFiles(request, response) { // HTTP web server request handler
     //util.log('http file serving starting...'+request.url);
@@ -137,7 +139,11 @@ http.createServer(function (request, response) { // The combined web/application
 
     }
     else if (url.query.q == null) {  // Plain web server
+        /* My implementation
         serveFiles(request, response);
+        */
+        console.log('Serving via Node-static');
+        staticHttpServer.serve(request, response);
     }
     else { // Service API for BuzzQ queries
         /*
