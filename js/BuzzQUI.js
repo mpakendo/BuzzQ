@@ -139,7 +139,9 @@ pager = new Imtech.Pager();
                 for (var i = 0;i<resultObjects.length;i++) {
                     switch (resultObjects[i].source) {
                         case "twitter":
-                            var linkPattern = new RegExp("((http)|(https))://([.]|[^ ])*","g");
+                            //var linkPattern = new RegExp('((http)|(https))://([.]|[^ ])+','g');
+                            var linkPattern = new RegExp('((http)|(https))://([A-Za-z0-9\.\/])+','g');
+
                             var links = resultObjects[i].text.match(linkPattern);
                             var newText = resultObjects[i].text;
                             twitterResults += '<p>';

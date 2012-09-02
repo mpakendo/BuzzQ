@@ -8,18 +8,15 @@
 
  */
 var http = require('http');
-var fs = require('fs');
-var path = require('path');
 var https = require('https');
 var util = require('util');
 var urlmodule = require('url');
-var static = require('node-static');
+var nodestatic = require('node-static');
 
 var TwitterCallComplete = false;
 var TwitPicCallComplete = false;
 var FlickrCallComplete = false;
 var InstagramCallComplete = false;
-var CONFIGOPTIONFILENAME = './config.json';
 var Config = {
     flickr: {apiKey:null},
     instagram: {accessToken:null},
@@ -34,50 +31,7 @@ process.on('uncaughtException', function(e) {
     util.log('UNCAUGHT EXCEPTION:'+ e);
 });
 
-var staticHttpServer = new static.Server('./');
-
-function serveFiles(request, response) { // HTTP web server request handler
-    //util.log('http file serving starting...'+request.url);
-
-    var filePath = '.' + request.url;
-    if (filePath == './')
-        filePath = './index.html';
-
-    var extname = path.extname(filePath);
-    var contentType = 'text/html';
-    switch (extname) {
-        case '.js':
-            contentType = 'text/javascript';
-            break;
-        case '.css':
-            contentType = 'text/css';
-            break;
-        case '.jpg':
-        case '.jpeg':
-            contentType = 'image/jpeg';
-            break;
-    }
-
-    path.exists(filePath, function(exists) {
-
-        if (exists) {
-            fs.readFile(filePath, function(error, content) {
-                if (error) {
-                    response.writeHead(500);
-                    response.end();
-                }
-                else {
-                    response.writeHead(200, { 'Content-Type': contentType });
-                    response.end(content, 'utf-8');
-                }
-            });
-        }
-        else {
-            response.writeHead(404);
-            response.end();
-        }
-    });
-}
+var staticHttpServer = new nodestatic.Server('./');
 
 
 
@@ -138,11 +92,8 @@ http.createServer(function (request, response) { // The combined web/application
         response.end(JSON.stringify(Config),encoding='utf8'); //not good, we transfer keys here. refactor. TODO
 
     }
-    else if (url.query.q == null) {  // Plain web server
-        /* My implementation
-        serveFiles(request, response);
-        */
-        console.log('Serving via Node-static');
+    else if (url.query.q == null) {  // serve static files
+
         staticHttpServer.serve(request, response);
     }
     else { // Service API for BuzzQ queries
