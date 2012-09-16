@@ -28,6 +28,10 @@ Debug.prototype.println = function(str) {
  this.debugInfo += "<BR>";
 };
 
+Debug.prototype.clear = function() {
+    this.debugInfo = "DEBUG DATA:";
+};
+
 Debug.prototype.clearDebugInfo = function () {
 	this.debugInfo = "DEBUG DATA:";
 	if (this.displayingDebugInfo) {
@@ -54,12 +58,6 @@ function displayIdOnMouseOver(evt) {
 }
 
 
-function wireMouseOver() {
-  var images = document.getElementsByTagName("img");
-  for (var i = 0; i<images.length; i++) {
-	  images[i].onclick =displayIdOnMouseOver;
-  }
-}
 
 
 var debug = new Debug();

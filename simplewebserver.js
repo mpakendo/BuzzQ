@@ -88,8 +88,10 @@ http.createServer(function (request, response) { // The combined web/application
 
 
     if (url.pathname == '/'+API.configEndPoint) { // Service API for BuzzQUI to relay configurations to the GUI
+        var config = {
+            debug: Config.debug};
         response.writeHead(200, {'Content-Type': 'text/plain'});
-        response.end(JSON.stringify(Config),encoding='utf8'); //not good, we transfer keys here. refactor. TODO
+        response.end(JSON.stringify(config),encoding='utf8');
 
     }
     else if (url.query.q == null) {  // serve static files
@@ -151,7 +153,7 @@ http.createServer(function (request, response) { // The combined web/application
         };
 
         var twitpicErrorCallback = function(err) {
-            util.log('Twitpic Call Error'+err.message);
+            util.log('Twitpic Call Error:'+err.message);
             TwitPicCallComplete = true;
             endHandler();
         };
@@ -185,7 +187,7 @@ http.createServer(function (request, response) { // The combined web/application
         };
 
         var twitterErrorCallback = function (err) {
-            util.log('Twitter Error'+err.message);
+            util.log('Twitter Error:'+err.message);
             TwitterCallComplete = true;
             endHandler();
         };
@@ -236,7 +238,7 @@ http.createServer(function (request, response) { // The combined web/application
         };
 
         var flickrErrorCallback = function (err) {
-            util.log('Flickr Error'+err.message);
+            util.log('Flickr Error:'+err.message);
             FlickrCallComplete = true;
             endHandler();
         };
@@ -275,7 +277,7 @@ http.createServer(function (request, response) { // The combined web/application
         };
 
         var instagramErrorCallback = function (err) {
-            util.log('Instagram Error'+err.message);
+            util.log('Instagram Error:'+err.message);
             InstagramCallComplete = true;
             endHandler();
         };

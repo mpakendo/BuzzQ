@@ -141,7 +141,7 @@ pager = new Imtech.Pager();
                 var twitpicResults ='';
                 var flickrResults = '';
                 var instagramResults = '';
-
+                debug.clear();
                 for (var i = 0;i<resultObjects.length;i++) {
                     switch (resultObjects[i].source) {
                         case "twitter":
@@ -150,6 +150,7 @@ pager = new Imtech.Pager();
 
                             var links = resultObjects[i].text.match(linkPattern);
                             var newText = resultObjects[i].text;
+                            debug.println("Processing tweet info:"+newText);
                             twitterResults += '<p>';
                             twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" />');
                             // https://twitter.com/#!/timoreilly
