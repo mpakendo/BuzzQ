@@ -15,6 +15,12 @@ function BuzzQUI() {
         configEndPoint: "config"
     };
     this.debug = false;
+    this.loadingDialog = $('<div></div>')
+        .html('Loading buzz data from all sources.<div style="width: 80%; margin: 0px auto;"><img src="images/loader.gif"/> </div>')
+        .dialog ({
+            autoOpen: false,
+            title: 'Load Buzz'
+    });
 }
 
 pager = new Imtech.Pager();
@@ -186,6 +192,7 @@ pager = new Imtech.Pager();
                     }
                 }
 
+                ui.loadingDialog.dialog('close');
                 //$('#twitter-tab').append(twitterResults); // HUH? Jquery version does not work properly. But getElementById does.
                 document.getElementById('twitter-tab').innerHTML = twitterResults+'</div> <div id=\"pagingControls\"></div>';
 
@@ -206,7 +213,9 @@ pager = new Imtech.Pager();
             $('#flickr-tab').html('<div id="flickr-gallery"></div>');
             $('#instagram-tab').html('<div id="instagram-gallery"></div>');
 
+            this.loadingDialog.dialog('open');
             invokeAJAXCall(xmlHttp,url,callbackFunction);
+
         }
     };
 
