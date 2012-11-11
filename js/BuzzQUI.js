@@ -12,7 +12,8 @@ function BuzzQUI() {
     this.api = {
         url: document.location,
         queryEndPoint:  "query",
-        configEndPoint: "config"
+        configEndPoint: "config",
+        rssEndPoint: "feed"
     };
     this.debug = false;
     this.loadingDialog = $('<div></div>')
@@ -85,19 +86,31 @@ pager = new Imtech.Pager();
             'instagram': false};
     };
 
+    BuzzQUI.prototype.gotoURL = function(event) {
+        /* http://localhost:8125/rss?q=vic20 */
 
+        alert("HREF to:"+this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
+        window.open(this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
+
+
+        /*
+        alert('HREF to:'+this.api.url+this.api.rssEndPoint+'/'+this.searchString+'/feed.xml');
+        window.open(this.api.url+this.api.rssEndPoint+'/'+this.searchString+'/feed.xml');
+        */
+
+    };
 
     BuzzQUI.prototype.displayGallery = function() {
         //debug.println("DISPLAY GALLERY:"+JSON.stringify(this.hasDisplayedSources)+ " SEL.TAB:"+this.selectedDisplayTab);
         if (!this.galleriaLoaded &&
-            ((this.selectedDisplayTab == 'flickr') ||
-             (this.selectedDisplayTab == 'twitpic')||
-             (this.selectedDisplayTab == 'instagram')  )) {
+            ((this.selectedDisplayTab === 'flickr') ||
+             (this.selectedDisplayTab === 'twitpic')||
+             (this.selectedDisplayTab === 'instagram')  )) {
             this.galleriaLoaded = true;
             Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
         }
 
-        if (this.selectedDisplayTab == 'flickr' && !this.hasDisplayedSources['flickr']) {
+        if (this.selectedDisplayTab === 'flickr' && !this.hasDisplayedSources['flickr']) {
             //debug.println("OPEN FLICKR GALLERY.");
             this.hasDisplayedSources['flickr']=true;
             $('#flickr-gallery').galleria({
@@ -106,7 +119,7 @@ pager = new Imtech.Pager();
             });
         }
 
-        if (this.selectedDisplayTab == 'twitpic' && !this.hasDisplayedSources['twitpic']) {
+        if (this.selectedDisplayTab === 'twitpic' && !this.hasDisplayedSources['twitpic']) {
             //debug.println("OPEN TWITPIC GALLERY.");
             this.hasDisplayedSources['twitpic']=true;
             $('#twitpic-gallery').galleria({
@@ -115,7 +128,7 @@ pager = new Imtech.Pager();
             });
         }
 
-         if (this.selectedDisplayTab == 'instagram' && !this.hasDisplayedSources['instagram']) {
+         if (this.selectedDisplayTab === 'instagram' && !this.hasDisplayedSources['instagram']) {
             //debug.println("OPEN INSTAGRAM GALLERY.");
             this.hasDisplayedSources['instagram']=true;
             $('#instagram-gallery').galleria({
@@ -150,7 +163,7 @@ pager = new Imtech.Pager();
 
                             var links = resultObjects[i].text.match(linkPattern);
                             var newText = resultObjects[i].text;
-                            debug.println("Processing tweet info:"+newText);
+                            //debug.println("Processing tweet info:"+newText);
                             twitterResults += '<p>';
                             twitterResults += ('<img src=\"'+ resultObjects[i].imageUrl+'\" alt=\"'+resultObjects[i].user+'\" />');
                             // https://twitter.com/#!/timoreilly

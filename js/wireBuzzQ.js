@@ -23,6 +23,8 @@ function WireBuzzQ() {
             }
         });
 
+        $("#BuzzQ-html-rssAction").click(function(event) {UI.gotoURL(event);});
+
         $('#tabs').bind('tabsshow', function(event, ui) {
             UI.selectedDisplayTab = UI.querySources[ui.index];
             UI.displayGallery();
