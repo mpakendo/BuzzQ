@@ -102,7 +102,11 @@ function queryServices(queryString, response, formatter) {
                     timestamp:apiPayload.images[i].timestamp,
                     user:null,
                     imageUrl:'http://twitpic.com/show/thumb/' + apiPayload.images[i].short_id,
-                    source:'twitpic'
+                    source:'twitpic',
+                    val1: null,
+                    val2: null,
+                    val3: null,
+                    val4: null
                 });
             }
         }
@@ -136,7 +140,11 @@ function queryServices(queryString, response, formatter) {
                     timestamp:apiPayload.results[i].created_at,
                     user:apiPayload.results[i].from_user,
                     imageUrl:apiPayload.results[i].profile_image_url,
-                    source:'twitter'
+                    source:'twitter',
+                    val1: apiPayload.results[i].id_str,
+                    val2: null,
+                    val3: null,
+                    val4: null
                 });
             }
         }
@@ -187,7 +195,11 @@ function queryServices(queryString, response, formatter) {
                     timestamp:null,
                     user:photo.owner,
                     imageUrl:'http://farm' + photo.farm + '.static.flickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_z.jpg',
-                    source:'flickr'
+                    source:'flickr',
+                    val1: null,
+                    val2: null,
+                    val3: null,
+                    val4: null
                 });
             }
         }
@@ -226,7 +238,11 @@ function queryServices(queryString, response, formatter) {
                     timestamp:new Date(apiPayload.data[i].created_time * 1000),
                     user:apiPayload.data[i].user.username + '(' + apiPayload.data[i].user.full_name + ')',
                     imageUrl:apiPayload.data[i].images.standard_resolution.url,
-                    source:'instagram'
+                    source:'instagram',
+                    val1: null,
+                    val2: null,
+                    val3: null,
+                    val4: null
                 });
             }
         }
@@ -243,13 +259,13 @@ function queryServices(queryString, response, formatter) {
     var instagramBuffer = '';
 
     TwitterCallComplete = false;
-    TwitPicCallComplete = true;
-    FlickrCallComplete = true;
+    TwitPicCallComplete = false;
+    FlickrCallComplete = false;
     InstagramCallComplete = true;
-    //callApi(flickrOptions, resultObjects, flickrEndCallback, flickrErrorCallback, flickrBuffer);
-    //callApi(twitPicOptions, resultObjects, twitpicEndCallback, twitpicErrorCallback, twitpicBuffer);
+    callApi(flickrOptions, resultObjects, flickrEndCallback, flickrErrorCallback, flickrBuffer);
+    callApi(twitPicOptions, resultObjects, twitpicEndCallback, twitpicErrorCallback, twitpicBuffer);
     callApi(twitterOptions, resultObjects, twitterEndCallback, twitterErrorCallback, twitterBuffer);
-   // callApi(instagramOptions, resultObjects, instagramEndCallback, instagramErrorCallback, instagramBuffer);
+    callApi(instagramOptions, resultObjects, instagramEndCallback, instagramErrorCallback, instagramBuffer);
 
 }
 
@@ -260,41 +276,33 @@ function rssFormatter(queryString, results) {
         '<rss version=\"2.0\">\n' +
         '<channel>\n' +
         '<title>Buzz Query for:' + queryString + '</title>\n' +
-        '<link>TBD</link>\n' +
+        '<link>http://blooming-mountain-1859.herokuapp.com/</link>\n' +
         '<description>Social media buzz feed.</description>\n' +
         '<language>en-us</language>\n' +
-        '<pubDate>Tue, 10 Jun 2003 04:00:00 GMT</pubDate>\n' +
-        '<lastBuildDate>Tue, 10 Jun 2003 09:41:01 GMT</lastBuildDate>\n' +
-        '<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n' +
+        '<pubDate>'+(new Date()).toString()+'</pubDate>\n' +
+        '<lastBuildDate>'+(new Date()).toString()+'</lastBuildDate>\n';
+       /* '<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n' +
         '<generator>Node JS hack on Heroku</generator>\n' +
         '<managingEditor>editor@example.com</managingEditor>\n' +
-        '<webMaster>webmaster@example.com</webMaster>\n';
+        '<webMaster>webmaster@example.com</webMaster>\n' */
+
 
     for (var i = 0; i < results.length; i++) {
         switch (results[i].source) {
             case "twitter":
-                var linkPattern = new RegExp('((http)|(https))://([A-Za-z0-9\.\/])+', 'g');
-                var links = results[i].text.match(linkPattern);
-               var newText = results[i].text;
+
                 output += '<item>\n';
-                output += '<title>Tweet by:';
+                output += '<title>Tweet by: ';
+                output += '<title>Tweet by: ';
                 //output += ('<a href=\"https://twitter.com/#!/' + results[i].user + '\" target=\"_blank\"/>');
                 //output += (' @' + results[i].user + '</a>');
                 output += results[i].user;
                 output += '</title>\n';
-                output += ('<link>' + '<img src=\"' + results[i].imageUrl + '\" alt=\"' + results[i].user + '\" /> </link>\n');
+                // https://twitter.com/USER/status/ID
+                output += ('<link>' + 'https://twitter.com/'+results[i].user+'/status/'+results[i].val1+'</link>\n');
                 output += '<description>\n';
-                if (links && !links) { //HACK
-                    for (var j = 0; j < links.length; j++) {
-                        var htmlLink = '<a href=\"' + links[j] + '\" target=\"_blank\"/>' + links[j] + '</a>';
-                        newText = newText.replace(links[j], htmlLink);
-                    }
-                    output += newText;
-                    output += '</description>\n';
-                } else {
-                    output += (newText + '</description>\n');
-                }
-                //output += (results[i].text + '</description>\n');
+                output += results[i].text;
+                output += '</description>\n';
                 output += ('<pubDate>' + results[i].timestamp + '</pubDate>\n');
                 output += '</item>\n';
                 break;
@@ -302,8 +310,8 @@ function rssFormatter(queryString, results) {
             case "flickr":
             case "instagram":
                 output += '<item>\n';
-                output += ('<title>Item by:' + results[i].user + '</title>\n');
-                output += ('<link>' + '<img src=\"' + results[i].imageUrl + '\" alt=\"' + results[i].user + '\" /> </link>\n');
+                output += ('<title>Item:'+results[i].source +':'+ (results[i].user==null?'':results[i].user) + '</title>\n');
+                output += ('<link>' + results[i].imageUrl + '</link>\n');
                 output += ('<description>' + results[i].text + '</description>\n');
                 output += ('<pubDate>' + results[i].timestamp + '</pubDate>\n');
                 output += '</item>\n';
