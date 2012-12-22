@@ -21,7 +21,7 @@ var TwitPicCallComplete = false;
 var FlickrCallComplete = false;
 var InstagramCallComplete = false;
 var Config = {
-    flickr: {apiKey:null},
+    flickr: {apiKey:null, perPage:50},
     instagram: {accessToken:null},
     debug: {debugOn:false},
     api: {url:null}};
@@ -182,8 +182,8 @@ function queryServices(queryString, response, formatter) {
 
     var flickrOptions = { // http://www.flickr.com/services/api/flickr.photos.search.html
         host:'api.flickr.com',
-        path:'/services/rest/?&method=flickr.photos.search&api_key=' + Config.flickr.apiKey + '&tags=' +
-            encodeURIComponent(queryString) + '&format=json&nojsoncallback=1'
+        path:'/services/rest/?&method=flickr.photos.search&api_key=' + Config.flickr.apiKey + '&text=' +
+            encodeURIComponent(queryString) + '&format=json&nojsoncallback=1' + '&per_page='+Config.flickr.perPage
     };
 
     var flickrEndCallback = function (apiPayload, resultObjects) {
@@ -261,7 +261,7 @@ function queryServices(queryString, response, formatter) {
     TwitterCallComplete = false;
     TwitPicCallComplete = false;
     FlickrCallComplete = false;
-    InstagramCallComplete = true;
+    InstagramCallComplete = false;
     callApi(flickrOptions, resultObjects, flickrEndCallback, flickrErrorCallback, flickrBuffer);
     callApi(twitPicOptions, resultObjects, twitpicEndCallback, twitpicErrorCallback, twitpicBuffer);
     callApi(twitterOptions, resultObjects, twitterEndCallback, twitterErrorCallback, twitterBuffer);
@@ -276,7 +276,7 @@ function rssFormatter(queryString, results) {
         '<rss version=\"2.0\">\n' +
         '<channel>\n' +
         '<title>Buzz Query for:' + queryString + '</title>\n' +
-        '<link>http://blooming-mountain-1859.herokuapp.com/</link>\n' +
+        '<link>http://blooming-mountain-1859.herokuapp.com</link>\n' +
         '<description>Social media buzz feed.</description>\n' +
         '<language>en-us</language>\n' +
         '<pubDate>'+(new Date()).toString()+'</pubDate>\n' +
