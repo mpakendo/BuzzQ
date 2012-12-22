@@ -281,18 +281,12 @@ function rssFormatter(queryString, results) {
         '<language>en-us</language>\n' +
         '<pubDate>'+(new Date()).toString()+'</pubDate>\n' +
         '<lastBuildDate>'+(new Date()).toString()+'</lastBuildDate>\n';
-       /* '<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n' +
-        '<generator>Node JS hack on Heroku</generator>\n' +
-        '<managingEditor>editor@example.com</managingEditor>\n' +
-        '<webMaster>webmaster@example.com</webMaster>\n' */
-
 
     for (var i = 0; i < results.length; i++) {
         switch (results[i].source) {
             case "twitter":
 
                 output += '<item>\n';
-                output += '<title>Tweet by: ';
                 output += '<title>Tweet by: ';
                 //output += ('<a href=\"https://twitter.com/#!/' + results[i].user + '\" target=\"_blank\"/>');
                 //output += (' @' + results[i].user + '</a>');

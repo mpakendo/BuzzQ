@@ -89,7 +89,7 @@ pager = new Imtech.Pager();
     BuzzQUI.prototype.gotoURL = function(event) {
         /* http://localhost:8125/rss?q=vic20 */
 
-        alert("HREF to:"+this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
+        // alert("HREF to:"+this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
         window.open(this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
 
 
