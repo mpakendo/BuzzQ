@@ -68,7 +68,6 @@ pager = new Imtech.Pager();
                 if (xmlHttp.readyState==4) {
                     if (xmlHttp.status==200) {
                         func();
-                        return;
                     }
                 }
             };
@@ -91,12 +90,6 @@ pager = new Imtech.Pager();
 
         // alert("HREF to:"+this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
         window.open(this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
-
-
-        /*
-        alert('HREF to:'+this.api.url+this.api.rssEndPoint+'/'+this.searchString+'/feed.xml');
-        window.open(this.api.url+this.api.rssEndPoint+'/'+this.searchString+'/feed.xml');
-        */
 
     };
 
@@ -216,7 +209,6 @@ pager = new Imtech.Pager();
                 pager.showPage(1);
                 ui.displayGallery();
 
-                return;
             };
 
         url=this.api.url+this.api.queryEndPoint+"?q="+this.searchString;

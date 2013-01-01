@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BuzzQ - tap the buzz!</title>
+    <link rel="stylesheet" type="text/css" href="./buzzq.css" />
+ <!--
+    <link rel="stylesheet" href="./ui-lightness/jquery-ui-1.8.16.custom.css" />
+ -->
+    <link rel="stylesheet" href="./ui-darkness/jquery-ui-1.8.16.custom.css" />
+    <script type="text/javascript" src="./js/debug.js"></script>
+    <script type="text/javascript" src="./js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="./galleria/galleria-1.2.6.js"></script>
+    <script type="text/javascript" src="./js/imtech_pager.js"></script>
+   
+    <script type="text/javascript" src="./js/BuzzQUI.js"></script>
+    <script type="text/javascript" src="./js/wireBuzzQ.js"></script>
+      
+  <script>
+    $(document).ready(function() {
+
+        var UI = new BuzzQUI();
+        var wireBuzzQ = new WireBuzzQ();
+        wireBuzzQ.connectHTML(UI);  
+    });
+  </script>
+
+ <style type="text/css">
+  * {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
+    color: #777777;
+    line-height: 140%;
+  }
+  select, input, textarea {
+    font-size: 1em;
+  }
+  body {
+    padding: 30px;
+    font-size: 70%;
+    width: 800px;
+  }
+</style>
+
+</head>
+  
+<body  style="background: rgb(255, 255, 255) url(images/PhotoGray_browser_bg-2.jpg) repeat scroll top left; margin: 0pt;">
+
+<!--  debug controls -->
+<div id="BuzzQ-html-debugZone" > </div>
+
+
+
+<div id="BuzzQ-html:inputForm1" style="height: 75px; left: 0px; position: relative; top: 0px; width: 750px; z-index: 1;">
+
+<table>
+	<tr>
+		<td> <h1 style="color:#ffffff"> BuzzQ: Tap the buzz! </h1> </td>
+        <td> <div id="BuzzQ-html:padding" style="height: 50px; left: 0px; position: relative; top: 0px; width: 60px; z-index: 1;"></div></td>
+        <td> <input id="BuzzQ-html-searchString" name="searchWords" type ="text" size="50"/> </td>
+		<td> <input type="button" id="BuzzQ-html-searchAction" value="Go Find"/> </td>
+        <td> <div id="BuzzQ-html-rssAction">
+            <!--
+              URL format for RSS feeds: feed://blooming-mountain-1859.herokuapp.com/rss?q=SEARCHSTRING
+            -->
+        <img src="images/feed-icon-14x14.png">
+        </div></td>
+	</tr>
+</table>
+
+
+</div>
+
+<script>
+	$(function() {
+		$( "#tabs" ).tabs();
+	});
+</script>
+
+
+
+<div class="results">
+
+<div id="tabs" style="position: relative; top: 0px; width: 750px; z-index: 1;">
+	<ul>
+		<li><a href="#twitter-tab">Twitter</a></li>
+		<li><a href="#twitpic-tab">Twitpic</a></li>
+        <li><a href="#flickr-tab">Flickr</a></li>
+        <li><a href="#instagram-tab">Instagram</a></li>
+
+
+	</ul>
+   <span style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;color: #ffffff;'>
+	<div id="twitter-tab" style="position: relative; top: 0px; width: 700px; height: 500px; z-index: 1;">
+        <div id="twittercontent">
+            <p>
+            <br>
+            <b>Tap into the social media buzz!</b>
+            <br> <br>
+            Just enter a tag and query several social media services at once.
+            Browse through simple image galleries and a paginated twitter stream to screen the conversation!
+            <br> <br>
+            <b>Technical background:</b>
+            <br> <br>
+            This simple app takes a keyword and queries several social media services in parallel.
+            Currently the app has integrated Twitter, Flickr, Twitpic and Instagram through their REST APIs.
+            These are called via a simple <a href="http://nodejs.org/" target ="_blank">node.js</a> server which passes the results back to the browser app.
+
+            This was made possible by the use of <a href="http://www.jquery.com" target="_blank">JQuery</a>,
+            <a href="http://www.jqueryui.com/home" target="_blank">JQuery-UI</a>,
+            <a href="http://galleria.aino.se" target="_blank">Galleria</a>, and
+            <a href="http://www.script-tutorials.com/how-to-create-easy-pagination-with-jquery/" target="_blank">Imtech pager</a>.
+
+            Currently the node.js app is hosted at <a href="http://www.heroku.com" target="_blank">Heroku</a>.
+            <br>  <br>
+            This was done purely as a hobby hack. There are known bugs.
+            </p>
+        </div>
+    </div>
+	</span>
+	
+	<div id="twitpic-tab">
+      <div id="twitpic-gallery">
+      </div>
+	</div>
+
+    <div id="flickr-tab">
+        <div id="flickr-gallery">
+        </div>
+    </div>
+
+     <div id="instagram-tab">
+        <div id="instagram-gallery">
+        </div>
+    </div>
+
+</div>
+
+</div><!-- End results -->
+
+
+
+</body>
+</html>
