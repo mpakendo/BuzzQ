@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+   <channel>
+      <title>BuzzQ RSS Query</title>
+      <link>http://blooming-mountain-1859.herokuapp.com/</link>
+      <description>Social media query service</description>
+      <language>en-us</language>
+      <pubDate>Sun, 13 Jan 2013 04:00:00 GMT</pubDate>
+      <lastBuildDate>Sun, 13 Jan 2013 04:00:00 GMT</lastBuildDate>
+      <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+      <generator>NodeJS, EJS, Express</generator>
+      <managingEditor>martin.pakendorf@gmail.com</managingEditor>
+      <webMaster>martin.pakendorf@gmail.com</webMaster>
+
+       <% results.forEach(function(result){ %>
+       <item>
+                <title><%= result.user+' '+result.source %></title>
+                <link><%= result.imageUrl %></link>
+                <description><%= result.text %></description>
+                <pubDate><%= result.timestamp %></pubDate>
+                <guid><%= result.val1+result.val2+result.val3+result.val4 %></guid>
+       </item>
+       <% }) %>
+
+
+   </channel>
+</rss>
