@@ -20,10 +20,12 @@ Debug.prototype.displayDebugInfo = function () {
 };
 
 Debug.prototype.printf = function (str) {
+  console.log(str);
   this.debugInfo += str;
 };  
 
 Debug.prototype.println = function(str) {
+ console.log(str);
  this.debugInfo += str;	
  this.debugInfo += "<BR>";
 };

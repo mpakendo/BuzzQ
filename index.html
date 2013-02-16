@@ -20,21 +20,12 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-      <script src="./js/debug.js"></script>
 
   </head>
 
   <body>
-  <!--  debug controls -->
-  <div id="BuzzQ-html-debugZone" >
-      <table><tr>
-              <td><a href='#' onclick='{return debug.displayDebugInfo();}'>Debug Information</a></td>
-              <td><a href='#' onclick='{return debug.clearDebugInfo();}'>Clear Debug Information</a></td>
-              </tr>
-      </table><div style='background:white' id='BuzzQ-html-displayDebugInfo'></div>
-  </div>
 
-
+  <div id="BuzzQ-html-debugZone" ></div>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -65,14 +56,15 @@
                     <form class="form-search">
                         <label>Enter search string:
                             <input id="BuzzQ-html-searchString" type="text" class="input-medium search-query">
-                            <button id="BuzzQ-html-searchAction" type="submit" class="btn btn-primary">Search</button>
+                            <!-- <button id="BuzzQ-html-searchAction" type="submit" class="btn btn-primary"> Search </button> -->
+                            <input type="button" id="BuzzQ-html-searchAction" value="Go Find"/>
                             <img id="BuzzQ-html-rssAction" style="vertical-align:bottom" src="images/feed-icon-14x14.png">
                         </label>
                     </form>
 
                     <ul class="nav nav-tabs" id="BuzzQ-html-tabs">
-                        <li class="active"><a href="#Twitter">Twitter</a></li>
-                        <li><a href="#Instagram">Instagram</a></li>
+                        <li><a href="#Twitter">Twitter</a></li>
+                        <li class="active"><a href="#Instagram">Instagram</a></li>
                         <li><a href="#Flickr">Flickr</a></li>
                         <li><a href="#Twitpic">Twitpic</a></li>
                     </ul>
@@ -133,37 +125,34 @@
     </div>
     <!-- /container -->
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-<!--
-    <script src="./js/jquery-1.6.2.min.js"></script>
-    <script src="./js/bootstrap.js"></script> -->
-
-  <script src="./assets/js/jquery.js"></script>
-      <script src="./assets/js/bootstrap-transition.js"></script>
-      <script src="./assets/js/bootstrap-alert.js"></script>
-      <script src="./assets/js/bootstrap-modal.js"></script>
-      <script src="./assets/js/bootstrap-dropdown.js"></script>
-      <script src="./assets/js/bootstrap-scrollspy.js"></script>
-      <script src="./assets/js/bootstrap-tab.js"></script>
-      <script src="./assets/js/bootstrap-tooltip.js"></script>
-      <script src="./assets/js/bootstrap-popover.js"></script>
-      <script src="./assets/js/bootstrap-button.js"></script>
-      <script src="./assets/js/bootstrap-collapse.js"></script>
-      <script src="./assets/js/bootstrap-carousel.js"></script>
-      <script src="./assets/js/bootstrap-typeahead.js"></script>
-
-  <script>
-    !function ($) {
-      $(function(){
-        // carousel demo
-        debug.println('Activating carousel..');
-        $('#myCarousel').carousel()
-      })
-    }(window.jQuery)
-  </script>
-
-
   </body>
+
+  <script src="./assets/js/jquery-1.8.3.min.js"></script>
+  <script src="./js/debug.js"></script>
+  <script src="./assets/js/bootstrap-transition.js"></script>
+  <script src="./assets/js/bootstrap-alert.js"></script>
+  <script src="./assets/js/bootstrap-modal.js"></script>
+  <script src="./assets/js/bootstrap-dropdown.js"></script>
+  <script src="./assets/js/bootstrap-scrollspy.js"></script>
+  <script src="./assets/js/bootstrap-tab.js"></script>
+  <script src="./assets/js/bootstrap-tooltip.js"></script>
+  <script src="./assets/js/bootstrap-popover.js"></script>
+  <script src="./assets/js/bootstrap-button.js"></script>
+  <script src="./assets/js/bootstrap-collapse.js"></script>
+  <script src="./assets/js/bootstrap-carousel.js"></script>
+  <script src="./assets/js/bootstrap-typeahead.js"></script>
+
+  <script src="./js/BuzzQUI-Responsive.js"></script>
+  <script src="./js/wireBuzzQ.js"></script>
+
+   <script>
+        (function () {
+                debug.println('Document Ready');
+                var UI = new BuzzQUI();
+                var wireBuzzQ = new WireBuzzQ();
+                wireBuzzQ.connectHTML(UI);
+                $('#myCarousel').carousel();
+
+        })();
+    </script>
 </html>

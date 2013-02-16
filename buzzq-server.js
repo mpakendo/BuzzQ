@@ -9,6 +9,7 @@
   - Twitpic
   - Flickr
   - Instagram
+  EJS (https://npmjs.org/package/ejs) is used together with Express (http://expressjs.com/) for server side templating.
  */
 
 
@@ -76,9 +77,16 @@ function queryServices(queryString, response, template) {
     var resultObjects = [];
 
     function endHandler() {
-        if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete && InstagramCallComplete) {
+        if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete && InstagramCallComplete) { //TODO: timeouts
             try {
+
                 response.render(template,{results: resultObjects});
+               // response.send(200);
+
+                /*
+                response.writeHead(200, {'Content-Type':'text/plain'});
+                    response.end(JSON.stringify(resultObjects), encoding = 'utf8');
+                    */
             } catch (e) {
                 util.log('EXCEPTION in END Handler:' + e);
             }
@@ -293,17 +301,17 @@ app.configure(function() {
     }
 });
 
-
+/*
 app.get('/*.:format(html|js|css|jpg|png)', function (req, res) {
 
     var url = urlModule.parse(req.url, true);
 
     util.log('Req.url:' + req.url);
-    /*util.log('Url.href:' + url.href);
+    util.log('Url.href:' + url.href);
     util.log('Url.host:' + url.host);
     util.log('Url.search:' + url.search);
     util.log('Url.query:' + url.query);
-    util.log('Url.pathname:' + url.pathname);*/
+    util.log('Url.pathname:' + url.pathname);
     staticHttpServer.serve(req, res);
 });
 
@@ -313,7 +321,7 @@ app.get('/'+ API.configEndPoint, function (req, res) {
     res.writeHead(200, {'Content-Type':'text/plain'});
     res.end(JSON.stringify(config), encoding = 'utf8');
 });
-
+*/
 
 
 app.get('/'+ API.rssEndPoint + '*', function (req, res) {
@@ -385,6 +393,60 @@ res.render('test.ejs', {debug:true, compileDebug: true,
 }});
 */
 
+});
+
+
+
+
+
+app.get('/'+ API.queryEndPoint + '*', function (req, res) {
+    var url = urlModule.parse(req.url, true);
+    util.log('REST request.');
+    util.log('Url query keyword:'+url.query.q);
+    res.set('Content-Type', 'application/json');
+
+    //The first thing to notice is the lack of any reference to the EJS library.
+    // Express parses the view template’s filename and uses the extension (in this case,
+    // the ejs from rss.ejs) to determine which view engine should be used.
+
+    queryServices(url.query.q,res,'json.ejs');
+
+});
+
+
+app.get('/'+ API.configEndPoint, function (req, res) {
+    var config = {debug:Config.debug};
+    util.log('Configuration request.');
+    res.writeHead(200, {'Content-Type':'application/json'});
+    res.end(JSON.stringify(config), encoding = 'utf8');
+});
+
+
+app.get('/', function (req, res) {
+
+    var url = urlModule.parse(req.url, true);
+
+    util.log('Req.url:' + req.url);
+    util.log('Url.href:' + url.href);
+    util.log('Url.host:' + url.host);
+    util.log('Url.search:' + url.search);
+    util.log('Url.query:' + url.query);
+    util.log('Url.pathname:' + url.pathname);
+    staticHttpServer.serve(req, res);
+});
+
+
+app.get('/*.:format(html|js|css|jpg|png)', function (req, res) {
+
+    var url = urlModule.parse(req.url, true);
+
+    util.log('Req.url:' + req.url);
+    util.log('Url.href:' + url.href);
+    util.log('Url.host:' + url.host);
+    util.log('Url.search:' + url.search);
+    util.log('Url.query:' + url.query);
+    util.log('Url.pathname:' + url.pathname);
+    staticHttpServer.serve(req, res);
 });
 
 
