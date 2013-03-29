@@ -20,6 +20,8 @@ var urlModule = require('url');
 var fs = require('fs');
 var express = require('express');
 var nodeStatic = require('node-static');
+var mime = require('node-static/lib/node-static/mime');
+mime.contentTypes.ejs='text/plain';
 
 
 process.on('uncaughtException', function(e) {
@@ -79,14 +81,7 @@ function queryServices(queryString, response, template) {
     function endHandler() {
         if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete && InstagramCallComplete) { //TODO: timeouts
             try {
-
                 response.render(template,{results: resultObjects});
-               // response.send(200);
-
-                /*
-                response.writeHead(200, {'Content-Type':'text/plain'});
-                    response.end(JSON.stringify(resultObjects), encoding = 'utf8');
-                    */
             } catch (e) {
                 util.log('EXCEPTION in END Handler:' + e);
             }
@@ -301,97 +296,23 @@ app.configure(function() {
     }
 });
 
-/*
-app.get('/*.:format(html|js|css|jpg|png)', function (req, res) {
-
-    var url = urlModule.parse(req.url, true);
-
-    util.log('Req.url:' + req.url);
-    util.log('Url.href:' + url.href);
-    util.log('Url.host:' + url.host);
-    util.log('Url.search:' + url.search);
-    util.log('Url.query:' + url.query);
-    util.log('Url.pathname:' + url.pathname);
-    staticHttpServer.serve(req, res);
-});
-
-app.get('/'+ API.configEndPoint, function (req, res) {
-    var config = {debug:Config.debug};
-    util.log('Configuration request.');
-    res.writeHead(200, {'Content-Type':'text/plain'});
-    res.end(JSON.stringify(config), encoding = 'utf8');
-});
-*/
 
 
 app.get('/'+ API.rssEndPoint + '*', function (req, res) {
 
-    /*var output = fs.readFileSync('/Users/martin/Development/RSS-Spec-Material/sample20.xml'); // Temp only. TODO: use template engine
     var url = urlModule.parse(req.url, true);
-
-    util.log('RSS request.');
-    util.log('Url query keyword:'+url.query.q);
-
-    res.writeHead(200, {'Content-Type':'application/rss+xml'});
-    res.end(output, encoding = 'utf8');*/
-    var url = urlModule.parse(req.url, true);
-    var data = [
-        {
-            text:'MPAKENDO Test 1',
-            timestamp:(new Date()).toString(),
-            user:'MPAKENDO1',
-            imageUrl:'http://farm9.static.flickr.com/8437/7781360360_259fe57ea6_z.jpg',
-            source:'twitter',
-            val1:'PARAM1',
-            val2:null,
-            val3:null,
-            val4:null
-        },
-        {
-            text:'MPAKENDO Test 2',
-            timestamp:(new Date()).toString(),
-            user:'MPAKENDO2',
-            imageUrl:'http://distilleryimage1.s3.amazonaws.com/2f52a80231c311e2a74f1231381b811d_7.jpg',
-            source:'instagram',
-            val1:null,
-            val2:null,
-            val3:null,
-            val4:null
-        },
-        {
-            text:'MPAKENDO Test 3',
-            timestamp:(new Date()).toString(),
-            user:'MPAKENDO3',
-            imageUrl:'http://twitpic.com/show/thumb/4xm027',
-            source:'twitpic',
-            val1:null,
-            val2:null,
-            val3:'PARAM3',
-            val4:null
-        }
-
-    ];
-
 
     util.log('RSS request.');
     util.log('Url query keyword:'+url.query.q);
 
     res.set('Content-Type', 'application/rss+xml');
 
-    //The first thing to notice is the lack of any reference to the EJS library.
+    // No reference to the EJS library.
     // Express parses the view template’s filename and uses the extension (in this case,
     // the ejs from rss.ejs) to determine which view engine should be used.
 
     //res.render('rss.ejs',{results: data});
     queryServices(url.query.q,res,'rss.ejs');
-/*
-res.render('test.ejs', {debug:true, compileDebug: true,
-    data: {
-    header: 'FÜKENGRÜVEN',
-    title: 'FUKYEAH',
-    names: ['foo', 'bar', 'baz']
-}});
-*/
 
 });
 
@@ -405,28 +326,22 @@ app.get('/'+ API.queryEndPoint + '*', function (req, res) {
     util.log('Url query keyword:'+url.query.q);
     res.set('Content-Type', 'application/json');
 
-    //The first thing to notice is the lack of any reference to the EJS library.
+    // No reference to the EJS library.
     // Express parses the view template’s filename and uses the extension (in this case,
-    // the ejs from rss.ejs) to determine which view engine should be used.
+    // the ejs from json.ejs) to determine which view engine should be used.
 
     queryServices(url.query.q,res,'json.ejs');
 
 });
 
 
-app.get('/'+ API.configEndPoint, function (req, res) {
-    var config = {debug:Config.debug};
-    util.log('Configuration request.');
-    res.writeHead(200, {'Content-Type':'application/json'});
-    res.end(JSON.stringify(config), encoding = 'utf8');
-});
 
 
 app.get('/', function (req, res) {
 
     var url = urlModule.parse(req.url, true);
 
-    util.log('Req.url:' + req.url);
+    util.log('ROUTE: / Req.url:' + req.url);
     util.log('Url.href:' + url.href);
     util.log('Url.host:' + url.host);
     util.log('Url.search:' + url.search);
@@ -436,11 +351,11 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/*.:format(html|js|css|jpg|png)', function (req, res) {
+app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
 
     var url = urlModule.parse(req.url, true);
 
-    util.log('Req.url:' + req.url);
+    util.log('ROUTE: /*.:format(html|js|css|jpg|png|ejs) Req.url:' + req.url);
     util.log('Url.href:' + url.href);
     util.log('Url.host:' + url.host);
     util.log('Url.search:' + url.search);
@@ -448,6 +363,16 @@ app.get('/*.:format(html|js|css|jpg|png)', function (req, res) {
     util.log('Url.pathname:' + url.pathname);
     staticHttpServer.serve(req, res);
 });
+
+
+
+app.get('/'+ API.configEndPoint, function (req, res) {
+    var config = {debug:Config.debug};
+    util.log('Configuration request.');
+    res.writeHead(200, {'Content-Type':'text/plain'});
+    res.end(JSON.stringify(config), encoding = 'utf8');
+});
+
 
 
 app.listen(process.env.PORT);

@@ -1,0 +1,38 @@
+<div class="pagination">
+  <ul>
+      <li><a href="#">Prev</a>
+      <%
+      var counter = 1;
+      results.forEach(function(result) {
+      if (result.source == "twitter") {
+      var linkPattern = new RegExp('((http)|(https))://([A-Za-z0-9\.\/])+','g');
+      var links = result.text.match(linkPattern);
+      var newText = result.text;
+      %>
+      <li><a href="#"><%=counter%></a>
+      <p>
+      <img src="<%=result.imageUrl%>" alt="<%=result.user%>" />
+      <a href="https://twitter.com/#!<%=result.user%>" target="_blank"/>@<%=result.user%></a>
+      <br>
+      <%
+          if (links) {
+          for (var j = 0; j<links.length; j++) {
+               var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\"/>' + links[j] +'</a>';
+           newText = newText.replace(links[j],htmlLink);
+      }%>
+      <%=newText%><br>
+      <%} else {%>
+      <%=newText%><br>
+      <%}%>
+      <%=result.timestamp%>
+      </p>
+      <%
+       counter = counter+1;
+      }
+      });
+      %>
+      </li>
+
+    <li><a href="#">Next</a></li>
+  </ul>
+</div>

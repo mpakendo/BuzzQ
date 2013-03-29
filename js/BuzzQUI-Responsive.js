@@ -18,6 +18,12 @@ function BuzzQUI() {
         configEndPoint: "config",
         rssEndPoint: "feed"
     };
+    this.templates = {
+        twitterView: "",
+        flickrView: "",
+        twitpicView: "",
+        instagramView: ""
+    };
     this.debug = false;
 
 }
@@ -26,39 +32,6 @@ function BuzzQUI() {
 (function() {
 
 
-    function getXmlHttpObject() {
-           var xmlHttp=null;
-           try {
-               // Firefox, Opera 8.0+, Safari
-               xmlHttp=new XMLHttpRequest();
-           }
-           catch (e) {
-               // Internet Explorer
-               try {
-                   xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-               }
-               catch (ex) {
-                   xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-               }
-           }
-           return xmlHttp;
-       }
-
-       function invokeAJAXCall(xmlHttp,url, func) {
-           xmlHttp.onreadystatechange=
-               function() {
-                   //debug.println("READYSTATECHANGE:"+xmlHttp.readyState+" STATUS:"+xmlHttp.status+" TEXT: "+xmlHttp.statusText);
-                   if (xmlHttp.readyState==4) {
-                       if (xmlHttp.status==200) {
-                           func();
-                       }
-                   }
-               };
-           debug.println("Calling AJAX URL:" + url);
-
-           xmlHttp.open("GET",url,true);
-           xmlHttp.send(null);
-       }
 
     //debug.println("document.location:"+document.location);
     function getAttrFromEvent (event, attr) {
@@ -73,6 +46,18 @@ function BuzzQUI() {
         return id;
     }
 
+    BuzzQUI.prototype.initUI = function () {
+        this.templates.twitterView = $.ajax({
+                              type: "GET",
+                              url: "./clientviews/twitterresults.ejs",
+                              async: false
+                          }).responseText;
+        /*
+                          var names = ['lucas', 'philipp', 'martin', 'shuo'];
+                          var html = ejs.render(this.templates.twitterView, { names: names });
+                          console.log(html);
+                          */
+    };
 
     BuzzQUI.prototype.setSearchString = function (event) {
         try {
@@ -96,18 +81,14 @@ function BuzzQUI() {
     BuzzQUI.prototype.goFind = function (event) {
         try {
             var callbackFunction;
+            var ui = this;
             debug.println('Go Find');
 
             callbackFunction =
-                function (data) { // TODO Refactor
-                    var twitterResults = '<div id=\"twittercontent\">';
-                    var twitpicResults = '';
-                    var flickrResults = '';
-                    var instagramResults = '';
-                    debug.println('CallBackeroni!'+JSON.stringify(data[0]));
-                    for (var i = 0; i < data.length; i++) {
-                        debug.println(data[i].text);
-                    }
+                function (data) {
+                    var html = ejs.render(ui.templates.twitterView, {results: data});
+                     console.log(html);
+                     $('#Twitter').html(html);
                 };
 
             url = this.api.url + this.api.queryEndPoint + "?q=" + this.searchString;
