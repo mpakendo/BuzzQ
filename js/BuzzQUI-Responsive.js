@@ -6,7 +6,7 @@
 function BuzzQUI() {
     this.searchString ="";
 
-    this.querySources = ["twitter","twitpic","flickr","instagram"]; // order needs to match the order in the HTML tabs
+    this.querySources = ["twitter","twitpic","flickr","instagram"]; // need this to remember the active tabs
     this.selectedDisplayTab = "twitter";
     this.hasDisplayedSources = {"twitter": false,
         "twitpic": false,
@@ -32,9 +32,8 @@ function BuzzQUI() {
 (function() {
 
 
-
     //debug.println("document.location:"+document.location);
-    function getAttrFromEvent (event, attr) {
+    function getAttrFromEvent(event, attr) {
         var id;
         if (!event) event = window.event;
         if (!event.target) { //IE
@@ -47,16 +46,22 @@ function BuzzQUI() {
     }
 
     BuzzQUI.prototype.initUI = function () {
+        // load client templates
         this.templates.twitterView = $.ajax({
-                              type: "GET",
-                              url: "./clientviews/twitterresults.ejs",
-                              async: false
-                          }).responseText;
-        /*
-                          var names = ['lucas', 'philipp', 'martin', 'shuo'];
-                          var html = ejs.render(this.templates.twitterView, { names: names });
-                          console.log(html);
-                          */
+            type:"GET",
+            url:"./clientviews/twitterresults.ejs",
+            async:false
+        }).responseText;
+        this.templates.instagramView = $.ajax({
+            type:"GET",
+            url:"./clientviews/instagramresults.ejs",
+            async:false
+        }).responseText;
+        this.templates.flickrView = $.ajax({
+             type:"GET",
+             url:"./clientviews/flickrresults.ejs",
+             async:false
+         }).responseText;
     };
 
     BuzzQUI.prototype.setSearchString = function (event) {
@@ -80,18 +85,21 @@ function BuzzQUI() {
 
     BuzzQUI.prototype.goFind = function (event) {
         try {
-            var callbackFunction;
-            var ui = this;
-            debug.println('Go Find');
-
-            callbackFunction =
+            var ui = this; // bind 'this' for callback closure
+            var url = this.api.url + this.api.queryEndPoint + "?q=" + this.searchString;
+            var callbackFunction =
                 function (data) {
                     var html = ejs.render(ui.templates.twitterView, {results: data});
-                     console.log(html);
-                     $('#Twitter').html(html);
+                     //console.log(html);
+                     $('#BuzzQ-html-Twitter-pane').html(html);
+                    html = ejs.render(ui.templates.instagramView, {results: data});
+                    //console.log(html);
+                    $('#BuzzQ-html-Instagram-pane').html(html);
+                    html = ejs.render(ui.templates.flickrView, {results: data});
+                    console.log(html);
+                    $('#BuzzQ-html-Flickr-pane').html(html);
                 };
 
-            url = this.api.url + this.api.queryEndPoint + "?q=" + this.searchString;
             if (!(this.searchString == "")) {
                 $.getJSON(url, callbackFunction);
             }

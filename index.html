@@ -47,7 +47,7 @@
                       var wireBuzzQ = new WireBuzzQ();
                       UI.initUI();
                       wireBuzzQ.connectHTML(UI);
-                      $('#myCarousel').carousel();
+                      //$('#myCarousel').carousel();
               });
           </script>
 
@@ -91,23 +91,22 @@
                             <img id="BuzzQ-html-rssAction" style="vertical-align:bottom" src="images/feed-icon-14x14.png">
                         </label>
                     </form>
-
+                    <div class="tabbable">
                     <ul class="nav nav-tabs" id="BuzzQ-html-tabs">
-                        <li class="active"><a href="#Twitter">Twitter</a></li>
-                        <li><a href="#Instagram">Instagram</a></li>
-                        <li><a href="#Flickr">Flickr</a></li>
-                        <li><a href="#Twitpic">Twitpic</a></li>
+                        <li id ="BuzzQ-html-Twitter-tab" class="active"><a href="#BuzzQ-html-Twitter-pane" data-toggle="tab">Twitter</a></li>
+                        <li id ="BuzzQ-html-Instagram-tab" ><a href="#BuzzQ-html-Instagram-pane" data-toggle="tab">Instagram</a></li>
+                        <li id ="BuzzQ-html-Flickr-tab"><a href="#BuzzQ-html-Flickr-pane" data-toggle="tab">Flickr</a></li>
+                        <li id ="BuzzQ-html-Twitpic-tab"><a href="#BuzzQ-html-Twitpic-pane" data-toggle="tab">Twitpic</a></li>
                     </ul>
 
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="Twitter"></div>
-                        <div class="tab-pane" id="Instagram">
+                    <div class="tab-content" style="height:300px">
+                        <div class="tab-pane active" id="BuzzQ-html-Twitter-pane" ></div>
+                        <div class="tab-pane" id="BuzzQ-html-Instagram-pane">
                             <!-- Carousel
-                               ================================================== -->
+                               ==================================================
                                <div id="myCarousel" class="carousel slide">
                                  <div class="carousel-inner">
                                    <div class="item active">
-                                     <!-- <img src="./images/slide-01.jpg" alt=""> -->
                                        <img src="http://farm9.static.flickr.com/8437/7781360360_259fe57ea6_z.jpg" alt="">
                                      <div class="container">
                                        <div class="carousel-caption">
@@ -117,7 +116,6 @@
                                      </div>
                                    </div>
                                    <div class="item">
-                                    <!-- <img src="./images/slide-02.jpg" alt=""> -->
                                        <img src="http://distilleryimage1.s3.amazonaws.com/2f52a80231c311e2a74f1231381b811d_7.jpg" alt="">
                                      <div class="container">
                                        <div class="carousel-caption">
@@ -129,7 +127,6 @@
                                    </div>
                                    <div class="item">
                                        <img src="http://twitpic.com/show/thumb/4xm027" alt="">
-                                     <!-- <img src="./images/slide-03.jpg" alt=""> -->
                                      <div class="container">
                                        <div class="carousel-caption">
                                          <h1>2011-05-14 17:59:22 null</h1>
@@ -140,13 +137,13 @@
                                  </div>
                                  <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
                                  <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
-                               </div><!-- /.carousel -->
+                               </div> /.carousel -->
 
                         </div> <!-- Instagram -->
-                        <div class="tab-pane" id="Flickr">...</div>
-                        <div class="tab-pane" id="Twitpic">...</div>
+                        <div class="tab-pane" id="BuzzQ-html-Flickr-pane">...</div>
+                        <div class="tab-pane" id="BuzzQ-html-Twitpic-pane">...</div>
                     </div>
-
+                    </div> <!-- tabbable -->
                 </div> <!--well -->
             </div> <!-- span10 -->
             <div class="span1"></div>

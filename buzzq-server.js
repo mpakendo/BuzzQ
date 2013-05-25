@@ -311,7 +311,6 @@ app.get('/'+ API.rssEndPoint + '*', function (req, res) {
     // Express parses the view template’s filename and uses the extension (in this case,
     // the ejs from rss.ejs) to determine which view engine should be used.
 
-    //res.render('rss.ejs',{results: data});
     queryServices(url.query.q,res,'rss.ejs');
 
 });

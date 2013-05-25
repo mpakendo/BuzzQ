@@ -1,6 +1,7 @@
-<div class="pagination">
-  <ul>
-      <li><a href="#">Prev</a>
+<!-- Render the Twitter results. Template: twitterresults.ejs -->
+<!-- <div class="pagination"> -->
+  <ol>
+      <!-- <li>  <a href="#">Prev</a> </li> -->
       <%
       var counter = 1;
       results.forEach(function(result) {
@@ -9,7 +10,8 @@
       var links = result.text.match(linkPattern);
       var newText = result.text;
       %>
-      <li><a href="#"><%=counter%></a>
+      <li><!-- <a href="#"><%=counter%></a> -->
+          <!-- <%=counter%> -->
       <p>
       <img src="<%=result.imageUrl%>" alt="<%=result.user%>" />
       <a href="https://twitter.com/#!<%=result.user%>" target="_blank"/>@<%=result.user%></a>
@@ -17,7 +19,7 @@
       <%
           if (links) {
           for (var j = 0; j<links.length; j++) {
-               var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\"/>' + links[j] +'</a>';
+               var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
            newText = newText.replace(links[j],htmlLink);
       }%>
       <%=newText%><br>
@@ -33,6 +35,6 @@
       %>
       </li>
 
-    <li><a href="#">Next</a></li>
-  </ul>
+    <!-- <li> <a href="#">Next</a> </li> -->
+  </ol>
 </div>
