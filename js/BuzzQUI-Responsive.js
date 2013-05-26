@@ -5,13 +5,6 @@
  */
 function BuzzQUI() {
     this.searchString ="";
-
-    this.querySources = ["twitter","twitpic","flickr","instagram"]; // need this to remember the active tabs
-    this.selectedDisplayTab = "twitter";
-    this.hasDisplayedSources = {"twitter": false,
-        "twitpic": false,
-        "flickr":  false,
-        "instagram": false};
     this.api = {
         url: document.location,
         queryEndPoint:  "query",
@@ -30,7 +23,6 @@ function BuzzQUI() {
 
 // Now we define the object BuzzQUI
 (function() {
-
 
     //debug.println("document.location:"+document.location);
     function getAttrFromEvent(event, attr) {
@@ -62,16 +54,17 @@ function BuzzQUI() {
              url:"./clientviews/flickrresults.ejs",
              async:false
          }).responseText;
+        this.templates.twitpicView = $.ajax({
+             type:"GET",
+             url:"./clientviews/twitpicresults.ejs",
+             async:false
+         }).responseText;
     };
 
     BuzzQUI.prototype.setSearchString = function (event) {
         try {
             var id = getAttrFromEvent(event, "id");
             this.searchString = $("#" + id).val();
-            this.hasDisplayedSources = {'twitter':false,
-                'twitpic':false,
-                'flickr':false,
-                'instagram':false};
         }
         catch (e) {
             alert('Exception:' + e.toString())
@@ -89,18 +82,21 @@ function BuzzQUI() {
             var url = this.api.url + this.api.queryEndPoint + "?q=" + this.searchString;
             var callbackFunction =
                 function (data) {
-                    var html = ejs.render(ui.templates.twitterView, {results: data});
-                     //console.log(html);
+                    var html = "";
+                    $('#BuzzQ-html-searchAction').popover('destroy');
+                    html = ejs.render(ui.templates.twitterView, {results: data});
+                    //console.log(html);
                      $('#BuzzQ-html-Twitter-pane').html(html);
                     html = ejs.render(ui.templates.instagramView, {results: data});
-                    //console.log(html);
                     $('#BuzzQ-html-Instagram-pane').html(html);
                     html = ejs.render(ui.templates.flickrView, {results: data});
-                    console.log(html);
                     $('#BuzzQ-html-Flickr-pane').html(html);
+                    html = ejs.render(ui.templates.twitpicView, {results: data});
+                    $('#BuzzQ-html-Twitpic-pane').html(html);
                 };
 
             if (!(this.searchString == "")) {
+                $('#BuzzQ-html-searchAction').popover('show');
                 $.getJSON(url, callbackFunction);
             }
         }

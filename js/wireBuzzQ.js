@@ -5,16 +5,19 @@ function WireBuzzQ() {
 
 (function () {
     WireBuzzQ.prototype.connectHTML =  function (UI) {
-        debug.println('Wiring UI');
+        //debug.println('Wiring UI');
 
         var fireQuery = function (event) {
             if (UI.searchString != ""  ) {
                 UI.goFind(event);
             }
         };
+        $("#BuzzQ-html-Home").attr("href", document.documentURI);
+        $("#BuzzQ-html-Brand").attr("href", document.documentURI);
+
 
         $("#BuzzQ-html-searchAction").click(function(event) {
-            debug.println('Click: BuzzQ-html-searchAction');
+            //debug.println('Click: BuzzQ-html-searchAction');
             fireQuery(event);
         });
 
@@ -35,14 +38,9 @@ function WireBuzzQ() {
         $("#BuzzQ-html-rssAction").click(function(event) {
             UI.gotoURL(event);
         });
-/*
-        $('#tabs').bind('tabsshow', function(event, ui) {
-            UI.selectedDisplayTab = UI.querySources[ui.index];
-            UI.displayGallery();
-        });
-*/
 
-        debug.println('CALLING AJAX URL:'+UI.api.url+UI.api.configEndPoint);
+
+        //debug.println('CALLING AJAX URL:'+UI.api.url+UI.api.configEndPoint);
         $.getJSON(UI.api.url+UI.api.configEndPoint, function(configData) { 
             if ('true'==configData.debug.debugOn) {
                 $("#BuzzQ-html-debugZone").html("<table><tr>" +

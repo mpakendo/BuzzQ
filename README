@@ -18,7 +18,7 @@ There are known bugs.
 
 The latest branch (responsivewebdesign) is a construction site as the Node.JS server is being rewritten for Express and EJS templating,
 which will also be used in the browser. The UI is in the middle of being ported to Twitter Bootstrap.
-URLS:
+URLs of the technology used in the application:
 https://npmjs.org/package/ejs
 http://twitter.github.com/bootstrap/index.html
 http://expressjs.com/

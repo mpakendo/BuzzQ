@@ -14,7 +14,9 @@
           <!-- <%=counter%> -->
       <p>
       <img src="<%=result.imageUrl%>" alt="<%=result.user%>" />
-      <a href="https://twitter.com/#!<%=result.user%>" target="_blank"/>@<%=result.user%></a>
+      <a href="https://twitter.com/#!<%=result.user%>" target="_blank">
+          <%="@"+result.user%>
+      </a>
       <br>
       <%
           if (links) {
@@ -22,7 +24,7 @@
                var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
            newText = newText.replace(links[j],htmlLink);
       }%>
-      <%=newText%><br>
+      <%-newText%><br> <!-- unescaped buffering in this case -->
       <%} else {%>
       <%=newText%><br>
       <%}%>
