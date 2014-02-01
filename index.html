@@ -7,14 +7,14 @@
     <meta name="description" content="Query social media sites in parallel for trending topics.">
     <meta name="author" content="mpakendo">
 
-    <!-- Le styles -->
-    <link href="./css/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="./css/bootstrap-responsive.css" rel="stylesheet">
+      <style>
+        body {
+          padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+      </style>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet"> <!-- need both -->
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -64,12 +64,12 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" id="BuzzQ-html-Brand" href="#">BuzzQ</a>
-          <div class="nav-collapse collapse">
+          <!-- <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a id="BuzzQ-html-Home" href="#">Home</a></li>
-             <!-- <li><a href="#about">About</a></li> -->
+             <li><a href="#about">About</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
+          </div>  /.nav-collapse -->
         </div>
       </div>
     </div>
@@ -96,15 +96,19 @@
                     </form>
                     <div class="tabbable">
                     <ul class="nav nav-tabs" id="BuzzQ-html-tabs">
+                        <!--
                         <li id ="BuzzQ-html-Twitter-tab" class="active"><a href="#BuzzQ-html-Twitter-pane" data-toggle="tab">Twitter</a></li>
-                        <li id ="BuzzQ-html-Instagram-tab" ><a href="#BuzzQ-html-Instagram-pane" data-toggle="tab">Instagram</a></li>
+                        -->
+                        <li id ="BuzzQ-html-Instagram-tab" class="active"><a href="#BuzzQ-html-Instagram-pane" data-toggle="tab">Instagram</a></li>
                         <li id ="BuzzQ-html-Flickr-tab"><a href="#BuzzQ-html-Flickr-pane" data-toggle="tab">Flickr</a></li>
                         <li id ="BuzzQ-html-Twitpic-tab"><a href="#BuzzQ-html-Twitpic-pane" data-toggle="tab">Twitpic</a></li>
                     </ul>
 
-                    <div class="tab-content" style="height:300px">
+                    <div class="tab-content" style="height:400px">
+                        <!--
                         <div class="tab-pane active" id="BuzzQ-html-Twitter-pane" ></div>
-                        <div class="tab-pane" id="BuzzQ-html-Instagram-pane">
+                        -->
+                        <div class="tab-pane active" id="BuzzQ-html-Instagram-pane">
 
                         </div> <!-- Instagram -->
                         <div class="tab-pane" id="BuzzQ-html-Flickr-pane">...</div>

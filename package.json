@@ -4,7 +4,8 @@
   "dependencies": {
       "node-static": "0.6.0",
       "express": "3.x",
-      "ejs": "0.8.x"
+      "ejs": "0.8.x",
+      "oauth": "0.9.x"
   },
   "engines": {
     "node": "0.8.x",

@@ -21,6 +21,9 @@ var fs = require('fs');
 var express = require('express');
 var nodeStatic = require('node-static');
 var mime = require('node-static/lib/node-static/mime');
+var oauth = require('oauth'); // https://npmjs.org/package/oauth
+//var oauth = require('oauth/lib/oauth2.js');
+
 mime.contentTypes.ejs='text/plain';
 
 
@@ -35,15 +38,25 @@ var InstagramCallComplete = false;
 var Config = {
     flickr: {apiKey:null, perPage:50},
     instagram: {accessToken:null},
+    twitter: {  consumerKey:null, // new Twitter API, see https://dev.twitter.com/docs/auth/application-only-auth
+                consumerSecret:null,
+                accessToken: null
+                /* ,
+                requestTokenURL: "https://api.twitter.com/oauth/request_token",
+                authorizeURL: "https://api.twitter.com/oauth/authorize",
+                accessTokenURL: "https://api.twitter.com/oauth/access_token"*/ },
     debug: {debugOn:false},
     api: {url:null}};
 var API = {
     queryEndPoint:  "query",
     configEndPoint: "config",
     rssEndPoint: "feed.rss"};
+var oauth2 = null; //initialize during app.configure
 
 var app = express();
 var staticHttpServer = new nodeStatic.Server('./');
+
+
 
 
 
@@ -67,8 +80,34 @@ function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
             });
     };
 
-    if (options.port == 443)
-        https.get(options,callback).on('error',errorCallback);
+    if (options.port == 443) {
+        if (options.host=='api.twitter.com') { /* do the twitter oauth get, rework exception handling */
+            util.log("Twitter params 0:"+options.host+options.path);
+            util.log("Twitter params 1:"+Config.twitter.accessToken);
+
+
+            oauth2.get(options.host+options.path, Config.twitter.accessToken,
+                function (e, data, res) {
+                   if (e) {
+                       util.log("Twitter call error 0:"+e);
+                       return errorCallback(e);
+                   }
+                   if (res.statusCode != 200) {
+                       util.log("Twitter call error 1:"+res.statusCode);
+                       return errorCallback(new Error('OAuth2 request failed: ' + res.statusCode));
+                   }
+                   try {
+                      data = JSON.parse(data);
+                      util.log("Twitter callback:"+data);
+                   } catch (e) {
+                        return errorCallback(e);
+                }
+                return endCallback(data, resultObjects);
+            });
+        }
+        else
+            https.get(options,callback).on('error',errorCallback);
+    }
     else
         http.get(options,callback).on('error',errorCallback);
 }
@@ -133,9 +172,19 @@ function queryServices(queryString, response, template) {
      *  */
 
     var twitterOptions = {
+        /* v1.0 API has been dropped
         host:'search.twitter.com',
         port:80,
         path:'/search.json?q=' + encodeURIComponent(queryString)
+        */
+
+        /* https://api.twitter.com/1.1/search/tweets.json, see  https://dev.twitter.com/docs/api/1.1/get/search/tweets#
+        * https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames
+        * */
+        host:'api.twitter.com',
+        port: 443,
+        path:'/1.1/search/tweets.json?q='+encodeURIComponent(queryString)
+
     };
 
     var twitterEndCallback = function (apiPayload, resultObjects) {
@@ -277,22 +326,41 @@ function queryServices(queryString, response, template) {
 
 
 app.configure(function() {
-    if (Config.flickr.apiKey == null) {
+    if (Config.flickr.apiKey == null) { //assume this means all configs have not been set
         if (process.env.FLICKR_APIKEY &&
             process.env.DEBUG_DEBUGON &&
-            process.env.INSTAGRAM_ACCESSTOKEN) {
+            process.env.INSTAGRAM_ACCESSTOKEN &&
+            process.env.TWITTER_CONSUMERKEY &&
+            process.env.TWITTER_CONSUMERSECRET) {
             Config.flickr.apiKey = process.env.FLICKR_APIKEY;
             Config.instagram.accessToken = process.env.INSTAGRAM_ACCESSTOKEN;
+            Config.twitter.consumerKey = process.env.TWITTER_CONSUMERKEY;
+            Config.twitter.consumerSecret = process.env.TWITTER_CONSUMERSECRET;
             Config.debug.debugOn = process.env.DEBUG_DEBUGON;
-            util.log('Read config var:' + Config.flickr.apiKey);
-            util.log('Read config var:' + Config.instagram.accessToken);
-            util.log('Read config var:' + Config.debug.debugOn);
+            util.log('Read config var flickr API key:' + Config.flickr.apiKey);
+            util.log('Read config var instagram access token:' + Config.instagram.accessToken);
+            util.log('Read config var twitter consumer key:' + Config.twitter.consumerKey);
+            util.log('Read config var twitter consumer secret:' + Config.twitter.consumerSecret);
+            util.log('Read config var debug:' + Config.debug.debugOn);
         }
         else {
             util.log('Configuration variables missing. Node server cannot function.');
             throw 'Configuration missing. Server broken.';
-
         }
+        // http://webapplog.com/node-js-oauth1-0-and-oauth2-0-twitter-api-v1-1-examples
+        var OAuth2 = oauth.OAuth2;
+        oauth2 = new OAuth2(
+            Config.twitter.consumerKey,
+            Config.twitter.consumerSecret,
+            'https://api.twitter.com/',
+            null,
+            'oauth2/token',
+            null);
+        oauth2.getOAuthAccessToken('', {'grant_type':'client_credentials'},
+            function (e, access_token, refresh_token, results) {
+                Config.twitter.accessToken = access_token;
+                util.log('Twitter access token, bearer: ' + Config.twitter.accessToken);
+        });
     }
 });
 
