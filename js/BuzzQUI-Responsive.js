@@ -72,7 +72,6 @@ function BuzzQUI() {
     };
 
     BuzzQUI.prototype.gotoURL = function(event) {
-        /* http://localhost:8125/rss?q=vic20 */
         window.open(this.api.url+this.api.rssEndPoint+".rss?q="+this.searchString);
     };
 
@@ -84,11 +83,9 @@ function BuzzQUI() {
                 function (data) {
                     var html = "";
                     $('#BuzzQ-html-searchAction').popover('destroy');
-                    /*
+
                     html = ejs.render(ui.templates.twitterView, {results: data});
-                    //console.log(html);
-                     $('#BuzzQ-html-Twitter-pane').html(html);
-                     */
+                    $('#BuzzQ-html-Twitter-pane').html(html);
                     html = ejs.render(ui.templates.instagramView, {results: data});
                     $('#BuzzQ-html-Instagram-pane').html(html);
                     html = ejs.render(ui.templates.flickrView, {results: data});

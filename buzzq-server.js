@@ -22,7 +22,6 @@ var express = require('express');
 var nodeStatic = require('node-static');
 var mime = require('node-static/lib/node-static/mime');
 var oauth = require('oauth'); // https://npmjs.org/package/oauth
-//var oauth = require('oauth/lib/oauth2.js');
 
 mime.contentTypes.ejs='text/plain';
 
@@ -40,11 +39,7 @@ var Config = {
     instagram: {accessToken:null},
     twitter: {  consumerKey:null, // new Twitter API, see https://dev.twitter.com/docs/auth/application-only-auth
                 consumerSecret:null,
-                accessToken: null
-                /* ,
-                requestTokenURL: "https://api.twitter.com/oauth/request_token",
-                authorizeURL: "https://api.twitter.com/oauth/authorize",
-                accessTokenURL: "https://api.twitter.com/oauth/access_token"*/ },
+                accessToken: null },
     debug: {debugOn:false},
     api: {url:null}};
 var API = {
@@ -55,8 +50,6 @@ var oauth2 = null; //initialize during app.configure
 
 var app = express();
 var staticHttpServer = new nodeStatic.Server('./');
-
-
 
 
 
@@ -80,34 +73,8 @@ function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
             });
     };
 
-    if (options.port == 443) {
-        if (options.host=='api.twitter.com') { /* do the twitter oauth get, rework exception handling */
-            util.log("Twitter params 0:"+options.host+options.path);
-            util.log("Twitter params 1:"+Config.twitter.accessToken);
-
-
-            oauth2.get(options.host+options.path, Config.twitter.accessToken,
-                function (e, data, res) {
-                   if (e) {
-                       util.log("Twitter call error 0:"+e);
-                       return errorCallback(e);
-                   }
-                   if (res.statusCode != 200) {
-                       util.log("Twitter call error 1:"+res.statusCode);
-                       return errorCallback(new Error('OAuth2 request failed: ' + res.statusCode));
-                   }
-                   try {
-                      data = JSON.parse(data);
-                      util.log("Twitter callback:"+data);
-                   } catch (e) {
-                        return errorCallback(e);
-                }
-                return endCallback(data, resultObjects);
-            });
-        }
-        else
-            https.get(options,callback).on('error',errorCallback);
-    }
+    if (options.port == 443)
+        https.get(options,callback).on('error',errorCallback);
     else
         http.get(options,callback).on('error',errorCallback);
 }
@@ -169,34 +136,31 @@ function queryServices(queryString, response, template) {
 
     /*  Twitter
      *  -------
+     *  https://api.twitter.com/1.1/search/tweets.json, see  https://dev.twitter.com/docs/api/1.1/get/search/tweets#
+     *  https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames
+     *
      *  */
 
     var twitterOptions = {
-        /* v1.0 API has been dropped
-        host:'search.twitter.com',
-        port:80,
-        path:'/search.json?q=' + encodeURIComponent(queryString)
-        */
 
-        /* https://api.twitter.com/1.1/search/tweets.json, see  https://dev.twitter.com/docs/api/1.1/get/search/tweets#
-        * https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames
-        * */
         host:'api.twitter.com',
         port: 443,
-        path:'/1.1/search/tweets.json?q='+encodeURIComponent(queryString)
-
+        path:'/1.1/search/tweets.json?q='+encodeURIComponent(queryString)+'&count=100',
+        headers: {
+            Authorization: 'Bearer '+Config.twitter.accessToken
+        }
     };
 
     var twitterEndCallback = function (apiPayload, resultObjects) {
-        if (apiPayload !== null && apiPayload.results !== null) {
-            for (var i = 0; i < apiPayload.results.length; i++) {
+        if (apiPayload !== null && apiPayload.statuses !== null) {
+            for (var i = 0; i < apiPayload.statuses.length; i++) {
                 resultObjects.push({
-                    text:apiPayload.results[i].text,
-                    timestamp:apiPayload.results[i].created_at,
-                    user:apiPayload.results[i].from_user,
-                    imageUrl:apiPayload.results[i].profile_image_url,
+                    text:apiPayload.statuses[i].text,
+                    timestamp:apiPayload.statuses[i].created_at,
+                    user:apiPayload.statuses[i].user.screen_name,
+                    imageUrl:apiPayload.statuses[i].user.profile_image_url,
                     source:'twitter',
-                    val1: apiPayload.results[i].id_str,
+                    val1: apiPayload.statuses[i].id_str,
                     val2: null,
                     val3: null,
                     val4: null
@@ -370,8 +334,8 @@ app.get('/'+ API.rssEndPoint + '*', function (req, res) {
 
     var url = urlModule.parse(req.url, true);
 
-    util.log('RSS request.');
-    util.log('Url query keyword:'+url.query.q);
+    /*util.log('RSS request.');
+    util.log('Url query keyword:'+url.query.q);*/
 
     res.set('Content-Type', 'application/rss+xml');
 
@@ -389,8 +353,10 @@ app.get('/'+ API.rssEndPoint + '*', function (req, res) {
 
 app.get('/'+ API.queryEndPoint + '*', function (req, res) {
     var url = urlModule.parse(req.url, true);
+    /*
     util.log('REST request.');
     util.log('Url query keyword:'+url.query.q);
+    */
     res.set('Content-Type', 'application/json');
 
     // No reference to the EJS library.
@@ -405,7 +371,7 @@ app.get('/'+ API.queryEndPoint + '*', function (req, res) {
 
 
 app.get('/', function (req, res) {
-
+/*
     var url = urlModule.parse(req.url, true);
 
     util.log('ROUTE: / Req.url:' + req.url);
@@ -414,12 +380,13 @@ app.get('/', function (req, res) {
     util.log('Url.search:' + url.search);
     util.log('Url.query:' + url.query);
     util.log('Url.pathname:' + url.pathname);
+*/
     staticHttpServer.serve(req, res);
 });
 
 
 app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
-
+/*
     var url = urlModule.parse(req.url, true);
 
     util.log('ROUTE: /*.:format(html|js|css|jpg|png|ejs) Req.url:' + req.url);
@@ -428,6 +395,7 @@ app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
     util.log('Url.search:' + url.search);
     util.log('Url.query:' + url.query);
     util.log('Url.pathname:' + url.pathname);
+*/
     staticHttpServer.serve(req, res);
 });
 
