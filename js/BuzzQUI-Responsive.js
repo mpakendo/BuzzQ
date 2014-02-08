@@ -86,6 +86,7 @@ function BuzzQUI() {
 
                     html = ejs.render(ui.templates.twitterView, {results: data});
                     $('#BuzzQ-html-Twitter-pane').html(html);
+                    console.log(html);
                     html = ejs.render(ui.templates.instagramView, {results: data});
                     $('#BuzzQ-html-Instagram-pane').html(html);
                     html = ejs.render(ui.templates.flickrView, {results: data});

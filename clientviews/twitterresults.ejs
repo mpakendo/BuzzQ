@@ -8,6 +8,8 @@
       if (result.source == "twitter") {
       var linkPattern = new RegExp('((http)|(https))://([A-Za-z0-9\.\/])+','g');
       var links = result.text.match(linkPattern);
+      var twitterNamePattern = new RegExp('@([A-Za-z0-9_])+','g');
+      var twitterNames = result.text.match(twitterNamePattern);
       var newText = result.text;
       %>
       <li><!-- <a href="#"><%=counter%></a> -->
@@ -19,11 +21,18 @@
       </a>
       <br>
       <%
-          if (links) {
-          for (var j = 0; j<links.length; j++) {
-               var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
-           newText = newText.replace(links[j],htmlLink);
-      }%>
+          if (links!=null || twitterNames !=null) {
+            if (links)
+                for (var j = 0; j<links.length; j++) {
+                    var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
+                    newText = newText.replace(links[j],htmlLink);
+                };
+          if (twitterNames)
+                for (j = 0; j<twitterNames.length; j++) {
+                    var twitterLink = '<a href=\"https://twitter.com/'+twitterNames[j] + '\" target=\"_blank\">' + twitterNames[j] +'</a>';
+                    newText = newText.replace(twitterNames[j],twitterLink);
+                };
+          %>
       <%-newText%><br> <!-- unescaped buffering in this case -->
       <%} else {%>
       <%=newText%><br>
