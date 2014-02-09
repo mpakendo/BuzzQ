@@ -81,7 +81,9 @@ function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
 
 
 function queryServices(queryString, response, template) {
-    util.log('Buzz Query for:' + encodeURIComponent(queryString));
+    if (Config.debug.debugOn) {
+        util.log('Buzz Query for:' + encodeURIComponent(queryString));
+    }
     var resultObjects = [];
 
     function endHandler() {
@@ -289,7 +291,7 @@ function queryServices(queryString, response, template) {
 }
 
 
-app.configure(function() {
+app.configure('all',function() {
     if (Config.flickr.apiKey == null) { //assume this means all configs have not been set
         if (process.env.FLICKR_APIKEY &&
             process.env.DEBUG_DEBUGON &&
@@ -300,12 +302,12 @@ app.configure(function() {
             Config.instagram.accessToken = process.env.INSTAGRAM_ACCESSTOKEN;
             Config.twitter.consumerKey = process.env.TWITTER_CONSUMERKEY;
             Config.twitter.consumerSecret = process.env.TWITTER_CONSUMERSECRET;
-            Config.debug.debugOn = process.env.DEBUG_DEBUGON;
+            Config.debug.debugOn = (process.env.DEBUG_DEBUGON=='true'?true:false);
             util.log('Read config var flickr API key:' + Config.flickr.apiKey);
             util.log('Read config var instagram access token:' + Config.instagram.accessToken);
             util.log('Read config var twitter consumer key:' + Config.twitter.consumerKey);
             util.log('Read config var twitter consumer secret:' + Config.twitter.consumerSecret);
-            util.log('Read config var debug:' + Config.debug.debugOn);
+            util.log('Read config var debug:' + Config.debug.debugOn +'type:' + typeof(Config.debug.debugOn));
         }
         else {
             util.log('Configuration variables missing. Node server cannot function.');
@@ -334,8 +336,10 @@ app.get('/'+ API.rssEndPoint + '*', function (req, res) {
 
     var url = urlModule.parse(req.url, true);
 
-    /*util.log('RSS request.');
-    util.log('Url query keyword:'+url.query.q);*/
+    if (Config.debug.debugOn) {
+        util.log('RSS request.');
+        util.log('Url query keyword:'+url.query.q);
+    }
 
     res.set('Content-Type', 'application/rss+xml');
 
@@ -353,10 +357,11 @@ app.get('/'+ API.rssEndPoint + '*', function (req, res) {
 
 app.get('/'+ API.queryEndPoint + '*', function (req, res) {
     var url = urlModule.parse(req.url, true);
-    /*
-    util.log('REST request.');
-    util.log('Url query keyword:'+url.query.q);
-    */
+    if (Config.debug.debugOn) {
+        util.log('REST request.');
+        util.log('Url query keyword:'+url.query.q);
+    }
+
     res.set('Content-Type', 'application/json');
 
     // No reference to the EJS library.
@@ -364,38 +369,38 @@ app.get('/'+ API.queryEndPoint + '*', function (req, res) {
     // the ejs from json.ejs) to determine which view engine should be used.
 
     queryServices(url.query.q,res,'json.ejs');
-
 });
 
 
 
 
 app.get('/', function (req, res) {
-/*
-    var url = urlModule.parse(req.url, true);
+    if (Config.debug.debugOn) {
+        var url = urlModule.parse(req.url, true);
 
-    util.log('ROUTE: / Req.url:' + req.url);
-    util.log('Url.href:' + url.href);
-    util.log('Url.host:' + url.host);
-    util.log('Url.search:' + url.search);
-    util.log('Url.query:' + url.query);
-    util.log('Url.pathname:' + url.pathname);
-*/
+        util.log('ROUTE: / Req.url:' + req.url);
+        util.log('Url.href:' + url.href);
+        util.log('Url.host:' + url.host);
+        util.log('Url.search:' + url.search);
+        util.log('Url.query:' + url.query);
+        util.log('Url.pathname:' + url.pathname);
+
+    }
     staticHttpServer.serve(req, res);
 });
 
 
 app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
-/*
-    var url = urlModule.parse(req.url, true);
+    if (Config.debug.debugOn) {
+        var url = urlModule.parse(req.url, true);
 
-    util.log('ROUTE: /*.:format(html|js|css|jpg|png|ejs) Req.url:' + req.url);
-    util.log('Url.href:' + url.href);
-    util.log('Url.host:' + url.host);
-    util.log('Url.search:' + url.search);
-    util.log('Url.query:' + url.query);
-    util.log('Url.pathname:' + url.pathname);
-*/
+        util.log('ROUTE: /*.:format(html|js|css|jpg|png|ejs) Req.url:' + req.url);
+        util.log('Url.href:' + url.href);
+        util.log('Url.host:' + url.host);
+        util.log('Url.search:' + url.search);
+        util.log('Url.query:' + url.query);
+        util.log('Url.pathname:' + url.pathname);
+    }
     staticHttpServer.serve(req, res);
 });
 
@@ -403,7 +408,9 @@ app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
 
 app.get('/'+ API.configEndPoint, function (req, res) {
     var config = {debug:Config.debug};
-    util.log('Configuration request.');
+    if (Config.debug.debugOn) {
+        util.log('Configuration request.');
+    }
     res.writeHead(200, {'Content-Type':'text/plain'});
     res.end(JSON.stringify(config), encoding = 'utf8');
 });
