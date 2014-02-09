@@ -1,9 +1,10 @@
 BuzzQ takes a query keyword and passes this on to different web service API's:
 - Twitter
+- Instagram
 - Twitpic
 - Flickr
 The application is still very experimental, consisting of:
-a) A UI built with Jquery-UI, Galleria (galleria.io) and very little glue
+a) A UI built with Jquery-UI, Twitter Bootstrap and very little glue
 b) a Node.js server with patches of code from everywhere.
 
 It currently serves as a learning testbed for a variety of technologies:
@@ -11,13 +12,14 @@ It currently serves as a learning testbed for a variety of technologies:
 - Node.js
 - Jquery
 - Jquery-UI
+- Twitter Bootstrap
 
 See http://blooming-mountain-1859.herokuapp.com/
 
-There are known bugs.
+There are many known bugs.
 
 The latest branch (responsivewebdesign) is a construction site as the Node.JS server is being rewritten for Express and EJS templating,
-which will also be used in the browser. The UI is in the middle of being ported to Twitter Bootstrap.
+which will also be used in the browser. The UI is based on Twitter Bootstrap.
 URLs of the technology used in the application:
 https://npmjs.org/package/ejs
 http://twitter.github.com/bootstrap/index.html
