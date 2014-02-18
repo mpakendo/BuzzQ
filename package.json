@@ -5,7 +5,8 @@
       "node-static": "0.6.0",
       "express": "3.x",
       "ejs": "0.8.x",
-      "oauth": "0.9.x"
+      "oauth": "0.9.x",
+       "q": "1.0.0"
   },
   "engines": {
     "node": "0.8.x",

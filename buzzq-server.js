@@ -9,7 +9,10 @@
   - Twitpic
   - Flickr
   - Instagram
+
   EJS (https://npmjs.org/package/ejs) is used together with Express (http://expressjs.com/) for server side templating.
+ *
+ *
  */
 
 
@@ -22,6 +25,8 @@ var express = require('express');
 var nodeStatic = require('node-static');
 var mime = require('node-static/lib/node-static/mime');
 var oauth = require('oauth'); // https://npmjs.org/package/oauth
+var Q = require('q'); // Promises package, https://www.npmjs.org/package/q
+                      // also http://promises-aplus.github.io/promises-spec/
 
 mime.contentTypes.ejs='text/plain';
 
@@ -30,10 +35,6 @@ process.on('uncaughtException', function(e) {
     util.log('UNCAUGHT EXCEPTION:'+ e);
 });
 
-var TwitterCallComplete = false;
-var TwitPicCallComplete = false;
-var FlickrCallComplete = false;
-var InstagramCallComplete = false;
 var Config = {
     flickr: {apiKey:null, perPage:50},
     instagram: {accessToken:null},
@@ -52,49 +53,42 @@ var app = express();
 var staticHttpServer = new nodeStatic.Server('./');
 
 
+function callApiPromise(options) {
+    var deferred = Q.defer();
+    var buffer = '';
 
-function callApi(options, resultObjects, endCallback, errorCallback, buffer) {
-    var callback = function(APIresponse) {
+    function httpCallback(APIresponse) {
         (APIresponse).setEncoding('utf8');
         (APIresponse).on('data',
-            function(chunk){
+            function (chunk) {
                 buffer = buffer + chunk; //need to buffer
             });
         (APIresponse).on('end',
-            function() {
-               try {
-                  var info = eval('('+buffer+')'); // Instagram returns a 404 html page crashing eval.. TODO: elegant error handling?
-                  endCallback(info,resultObjects);
+            function () {
+                try {
+                    var info = eval('(' + buffer + ')'); // Instagram returns a 404 html page crashing eval.. TODO: elegant error handling?
+                    deferred.resolve(info);
                 }
                 catch (e) {
-                    util.log('EXCEPTION in Call API for host:'+ options.host);
-                    errorCallback(e);
+                    util.log('EXCEPTION in Call API for host:' + options.host);
+                    deferred.reject(e);
                 }
             });
-    };
+    }
 
     if (options.port == 443)
-        https.get(options,callback).on('error',errorCallback);
+        https.get(options, httpCallback).on('error', deferred.reject);
     else
-        http.get(options,callback).on('error',errorCallback);
-}
+        http.get(options, httpCallback).on('error', deferred.reject);
 
+    return deferred.promise;
+}
 
 function queryServices(queryString, response, template) {
     if (Config.debug.debugOn) {
         util.log('Buzz Query for:' + encodeURIComponent(queryString));
     }
     var resultObjects = [];
-
-    function endHandler() {
-        if (TwitterCallComplete && TwitPicCallComplete && FlickrCallComplete && InstagramCallComplete) { //TODO: timeouts
-            try {
-                response.render(template,{results: resultObjects});
-            } catch (e) {
-                util.log('EXCEPTION in END Handler:' + e);
-            }
-        }
-    }
 
 
     /*  Twitpic
@@ -108,7 +102,7 @@ function queryServices(queryString, response, template) {
         path:'/2/tags/show.json?tag=' + encodeURIComponent(queryString)
     };
 
-    var twitpicEndCallback = function (apiPayload, resultObjects) {
+    function twitpicEndCallback(apiPayload) {
         if (apiPayload !== null && apiPayload.images !== null) {
             for (var i = 0; i < apiPayload.images.length; i++) {
                 resultObjects.push({
@@ -124,17 +118,8 @@ function queryServices(queryString, response, template) {
                 });
             }
         }
-        TwitPicCallComplete = true;
-        endHandler();
-    };
+    }
 
-    var twitpicErrorCallback = function (err) {
-        util.log('Twitpic Call Error:' + err.message);
-        TwitPicCallComplete = true;
-        endHandler();
-    };
-
-    var twitpicBuffer = '';
 
     /*  Twitter
      *  -------
@@ -153,7 +138,7 @@ function queryServices(queryString, response, template) {
         }
     };
 
-    var twitterEndCallback = function (apiPayload, resultObjects) {
+    function twitterEndCallback(apiPayload) {
         if (apiPayload !== null && apiPayload.statuses !== null) {
             for (var i = 0; i < apiPayload.statuses.length; i++) {
                 resultObjects.push({
@@ -169,18 +154,7 @@ function queryServices(queryString, response, template) {
                 });
             }
         }
-        TwitterCallComplete = true;
-        endHandler();
-    };
-
-    var twitterErrorCallback = function (err) {
-        util.log('Twitter Error:' + err.message);
-        TwitterCallComplete = true;
-        endHandler();
-    };
-
-    var twitterBuffer = '';
-
+    }
 
     /*  Flickr
      *  -------
@@ -207,7 +181,7 @@ function queryServices(queryString, response, template) {
             encodeURIComponent(queryString) + '&format=json&nojsoncallback=1' + '&per_page='+Config.flickr.perPage
     };
 
-    var flickrEndCallback = function (apiPayload, resultObjects) {
+    function flickrEndCallback(apiPayload) {
         if (apiPayload !== null && apiPayload.photos !== null && apiPayload.stat === 'ok' && apiPayload.photos.page !== 0) {
             for (var i = 0; i < apiPayload.photos.photo.length; i++) {
                 var photo = apiPayload.photos.photo[i];
@@ -224,17 +198,7 @@ function queryServices(queryString, response, template) {
                 });
             }
         }
-        FlickrCallComplete = true;
-        endHandler();
-    };
-
-    var flickrErrorCallback = function (err) {
-        util.log('Flickr Error:' + err.message);
-        FlickrCallComplete = true;
-        endHandler();
-    };
-
-    var flickrBuffer = '';
+    }
 
     /*  Instagram
      *  -------
@@ -247,7 +211,7 @@ function queryServices(queryString, response, template) {
         path:'/v1/tags/' + encodeURIComponent(queryString) + '/media/recent?access_token=' + Config.instagram.accessToken
     };
 
-    var instagramEndCallback = function (apiPayload, resultObjects) {
+    function instagramEndCallback(apiPayload) {
         if (apiPayload !== null && apiPayload.meta.code === 200) {
             for (var i = 0; i < apiPayload.data.length; i++) {
                 var tags = apiPayload.data[i].user.username + ' (' + apiPayload.data[i].user.full_name + '): ';
@@ -267,26 +231,35 @@ function queryServices(queryString, response, template) {
                 });
             }
         }
-        InstagramCallComplete = true;
-        endHandler();
-    };
+    }
 
-    var instagramErrorCallback = function (err) {
-        util.log('Instagram Error:' + err.message);
-        InstagramCallComplete = true;
-        endHandler();
-    };
 
-    var instagramBuffer = '';
 
-    TwitterCallComplete = false;
-    TwitPicCallComplete = false;
-    FlickrCallComplete = false;
-    InstagramCallComplete = false;
-    callApi(flickrOptions, resultObjects, flickrEndCallback, flickrErrorCallback, flickrBuffer);
-    callApi(twitPicOptions, resultObjects, twitpicEndCallback, twitpicErrorCallback, twitpicBuffer);
-    callApi(twitterOptions, resultObjects, twitterEndCallback, twitterErrorCallback, twitterBuffer);
-    callApi(instagramOptions, resultObjects, instagramEndCallback, instagramErrorCallback, instagramBuffer);
+    function errorCallback (param) {
+        return function (err) {
+            util.log('Error in API call:' + param + ' ' + err.message);
+        }
+    }
+
+    var flickrCallPromise = callApiPromise(flickrOptions)
+        .then(flickrEndCallback, errorCallback('Flickr'));
+    var twitPicCallPromise = callApiPromise(twitPicOptions)
+        .then(twitpicEndCallback, errorCallback('TwitPic'));
+    var twitterCallPromise = callApiPromise(twitterOptions)
+        .then(twitterEndCallback, errorCallback('Twitter'));
+    var instagramCallPromise = callApiPromise(instagramOptions)
+        .then(instagramEndCallback, errorCallback('Instagram'));
+
+    function fulfilledPromisesHandler() {
+        try {
+            response.render(template, {results:resultObjects});
+        } catch (e) {
+            util.log('EXCEPTION in fulfilled promises Handler:' + e);
+        }
+    }
+
+    var allPromises = Q.allSettled([flickrCallPromise, twitPicCallPromise, twitterCallPromise, instagramCallPromise]);
+    allPromises.then(fulfilledPromisesHandler, errorCallback('All Promises'));
 
 }
 

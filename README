@@ -13,6 +13,7 @@ It currently serves as a learning testbed for a variety of technologies:
 - Jquery
 - Jquery-UI
 - Twitter Bootstrap
+- JavaScript Promises
 
 See http://blooming-mountain-1859.herokuapp.com/
 
@@ -24,6 +25,7 @@ URLs of the technology used in the application:
 https://npmjs.org/package/ejs
 http://twitter.github.com/bootstrap/index.html
 http://expressjs.com/
+https://www.npmjs.org/package/q (http://promises-aplus.github.io/promises-spec/)
 
 
 
