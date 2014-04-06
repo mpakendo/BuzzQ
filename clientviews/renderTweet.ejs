@@ -1,0 +1,37 @@
+<!-- Render a tweet -->
+<%
+    var linkPattern = new RegExp('((http)|(https))://([A-Za-z0-9\.\/])+','g');
+    var links = model.text.match(linkPattern);
+    var twitterNamePattern = new RegExp('@([A-Za-z0-9_])+','g');
+    var twitterNames = model.text.match(twitterNamePattern);
+    var newText = model.text;
+%>
+
+    <p>
+    <img src="<%=model.imageUrl%>" alt="<%=model.user%>" />
+    <a href="https://twitter.com/#!<%=model.user%>" target="_blank">
+        <%="@"+model.user%>
+    </a>
+    <br>
+    <%
+        if (links!=null || twitterNames !=null) {
+          if (links)
+              for (var j = 0; j<links.length; j++) {
+                  var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
+                  newText = newText.replace(links[j],htmlLink);
+              }
+        if (twitterNames)
+              for (j = 0; j<twitterNames.length; j++) {
+                  var twitterLink = '<a href=\"https://twitter.com/'+twitterNames[j] + '\" target=\"_blank\">' + twitterNames[j] +'</a>';
+                  newText = newText.replace(twitterNames[j],twitterLink);
+              }
+        %>
+    <%-newText%><br> <!-- unescaped buffering in this case -->
+    <%} else {%>
+    <%=newText%><br>
+    <%}%>
+    <%=model.timestamp%>
+    </p>
+
+
+  

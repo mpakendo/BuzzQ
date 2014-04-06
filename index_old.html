@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BuzzQ - Tap social media sites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Query social media sites in parallel for trending topics.">
+    <meta name="author" content="mpakendo">
+
+      <style>
+        body {
+          padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+      </style>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet"> <!-- need both -->
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+      <script src="./assets/js/jquery-1.8.3.min.js"></script>
+        <script src="./js/debug.js"></script>
+        <script src="./assets/js/bootstrap-transition.js"></script>
+        <script src="./assets/js/bootstrap-alert.js"></script>
+        <script src="./assets/js/bootstrap-modal.js"></script>
+        <script src="./assets/js/bootstrap-dropdown.js"></script>
+        <script src="./assets/js/bootstrap-scrollspy.js"></script>
+        <script src="./assets/js/bootstrap-tab.js"></script>
+        <script src="./assets/js/bootstrap-tooltip.js"></script>
+        <script src="./assets/js/bootstrap-popover.js"></script>
+        <script src="./assets/js/bootstrap-button.js"></script>
+        <script src="./assets/js/bootstrap-collapse.js"></script>
+        <script src="./assets/js/bootstrap-carousel.js"></script>
+        <script src="./assets/js/bootstrap-typeahead.js"></script>
+
+        <script src="./js/BuzzQUI-Responsive.js"></script>
+        <script src="./js/wireBuzzQ.js"></script>
+        <script src="./js/ejs.js"></script>
+
+
+         <script>
+             $(document).ready(function() {
+                      //debug.println('Document Ready');
+                      var UI = new BuzzQUI();
+                      var wireBuzzQ = new WireBuzzQ();
+                      UI.initUI();
+                      wireBuzzQ.connectHTML(UI);
+              });
+          </script>
+
+  </head>
+
+  <body>
+
+  <div id="BuzzQ-html-debugZone" ></div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" id="BuzzQ-html-Brand" href="#">BuzzQ</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="span1"></div>
+            <div class="span10">
+                <h3>BuzzQ</h3>
+
+                <div class="well well-large">
+
+                    <form class="form-search">
+                        <label>Enter search string:
+                            <input id="BuzzQ-html-searchString" type="text" class="input-medium search-query"/>
+                            <!-- <button id="BuzzQ-html-searchAction" type="submit" class="btn btn-primary"> Search </button> -->
+                            <input type="button" id="BuzzQ-html-searchAction" value="Go Find"
+                                   data-toggle="popover"
+                                   data-placement="bottom"
+                                   title="Loading"
+                                   data-content="Buzz query running..."/>
+                            <img id="BuzzQ-html-rssAction" style="vertical-align:bottom" src="images/feed-icon-14x14.png">
+                        </label>
+                    </form>
+                    <div class="tabbable">
+                    <ul class="nav nav-tabs" id="BuzzQ-html-tabs">
+
+                        <li id ="BuzzQ-html-Twitter-tab" class="active"><a href="#BuzzQ-html-Twitter-pane" data-toggle="tab">Twitter</a></li>
+                        <li id ="BuzzQ-html-Instagram-tab"><a href="#BuzzQ-html-Instagram-pane" data-toggle="tab">Instagram</a></li>
+                        <li id ="BuzzQ-html-Flickr-tab"><a href="#BuzzQ-html-Flickr-pane" data-toggle="tab">Flickr</a></li>
+                        <li id ="BuzzQ-html-Twitpic-tab"><a href="#BuzzQ-html-Twitpic-pane" data-toggle="tab">Twitpic</a></li>
+                    </ul>
+
+                    <div class="tab-content" style="height:600px">
+
+                        <div class="tab-pane active" id="BuzzQ-html-Twitter-pane" ></div>
+                        <div class="tab-pane" id="BuzzQ-html-Instagram-pane"></div>
+                        <div class="tab-pane" id="BuzzQ-html-Flickr-pane">...</div>
+                        <div class="tab-pane" id="BuzzQ-html-Twitpic-pane">...</div>
+                    </div>
+                    </div> <!-- tabbable -->
+                </div> <!--well -->
+            </div> <!-- span10 -->
+            <div class="span1"></div>
+        </div> <!-- row -->
+
+    </div>
+    <!-- /container -->
+  </body>
+</html>

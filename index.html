@@ -1,116 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>BuzzQ - Tap social media sites</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Query social media sites in parallel for trending topics.">
-    <meta name="author" content="mpakendo">
+<!--<head>-->
+<!--<meta http-equiv="content-type" content="text/html; charset=UTF-8">-->
+<!--<meta charset="utf-8">-->
+<title>BuzzQ - Query social media buzz</title>
+<title>BuzzQ</title>
+<meta name="generator" content="BuzzQ"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="./css/buzzq.css" rel="stylesheet">
 
-      <style>
-        body {
-          padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
-        }
-      </style>
-
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet"> <!-- need both -->
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-      <script src="./assets/js/jquery-1.8.3.min.js"></script>
-        <script src="./js/debug.js"></script>
-        <script src="./assets/js/bootstrap-transition.js"></script>
-        <script src="./assets/js/bootstrap-alert.js"></script>
-        <script src="./assets/js/bootstrap-modal.js"></script>
-        <script src="./assets/js/bootstrap-dropdown.js"></script>
-        <script src="./assets/js/bootstrap-scrollspy.js"></script>
-        <script src="./assets/js/bootstrap-tab.js"></script>
-        <script src="./assets/js/bootstrap-tooltip.js"></script>
-        <script src="./assets/js/bootstrap-popover.js"></script>
-        <script src="./assets/js/bootstrap-button.js"></script>
-        <script src="./assets/js/bootstrap-collapse.js"></script>
-        <script src="./assets/js/bootstrap-carousel.js"></script>
-        <script src="./assets/js/bootstrap-typeahead.js"></script>
-
-        <script src="./js/BuzzQUI-Responsive.js"></script>
-        <script src="./js/wireBuzzQ.js"></script>
-        <script src="./js/ejs.js"></script>
+<!--[if lt IE 9]>
+<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 
 
-         <script>
-             $(document).ready(function() {
-                      //debug.println('Document Ready');
-                      var UI = new BuzzQUI();
-                      var wireBuzzQ = new WireBuzzQ();
-                      UI.initUI();
-                      wireBuzzQ.connectHTML(UI);
-              });
-          </script>
+</head>
 
-  </head>
+<body>
 
-  <body>
+<div class="navbar navbar-fixed-top header">
+    <div class="col-md-12">
+        <div class="navbar-header">
 
-  <div id="BuzzQ-html-debugZone" ></div>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" id="BuzzQ-html-Brand" href="#">BuzzQ</a>
+            <a id="BuzzQ-html-Brand" href="#" class="navbar-brand">BuzzQ</a>
+
+            <!--
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>
+            -->
+
         </div>
-      </div>
-    </div>
+        <!-- <div class="collapse navbar-collapse" id="navbar-collapse1"> -->
+        <div id="navbar-collapse1">
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="span1"></div>
-            <div class="span10">
-                <h3>BuzzQ</h3>
+            <form class="navbar-form pull-left">
+                <!-- <div class="input-group" style="max-width:500px;"> -->
+                <div class="input-group">
 
-                <div class="well well-large">
+                    <!-- <input type="text" class="form-control" placeholder="Search" name="srch-term" id="BuzzQ-html-searchString">
+-->
+                    <input type="text" placeholder="Search" id="BuzzQ-html-searchString"/>
 
-                    <form class="form-search">
-                        <label>Enter search string:
-                            <input id="BuzzQ-html-searchString" type="text" class="input-medium search-query"/>
-                            <!-- <button id="BuzzQ-html-searchAction" type="submit" class="btn btn-primary"> Search </button> -->
-                            <input type="button" id="BuzzQ-html-searchAction" value="Go Find"
-                                   data-toggle="popover"
-                                   data-placement="bottom"
-                                   title="Loading"
-                                   data-content="Buzz query running..."/>
-                            <img id="BuzzQ-html-rssAction" style="vertical-align:bottom" src="images/feed-icon-14x14.png">
-                        </label>
-                    </form>
-                    <div class="tabbable">
-                    <ul class="nav nav-tabs" id="BuzzQ-html-tabs">
+                    <div class="input-group-btn">
+                        <!--
+                        <button id="BuzzQ-html-searchAction"
+                                class="btn btn-default btn-primary" >
+                            <i class="glyphicon glyphicon-search"></i></button> -->
+                        <input type="button" id="BuzzQ-html-searchAction" value="Go Find"
+                               style="vertical-align:bottom; margin-left:2px"/>
+                        <img id="BuzzQ-html-rssAction" style="vertical-align:bottom; margin-left:2px"
+                             src="images/feed-icon-14x14.png"/>
 
-                        <li id ="BuzzQ-html-Twitter-tab" class="active"><a href="#BuzzQ-html-Twitter-pane" data-toggle="tab">Twitter</a></li>
-                        <li id ="BuzzQ-html-Instagram-tab"><a href="#BuzzQ-html-Instagram-pane" data-toggle="tab">Instagram</a></li>
-                        <li id ="BuzzQ-html-Flickr-tab"><a href="#BuzzQ-html-Flickr-pane" data-toggle="tab">Flickr</a></li>
-                        <li id ="BuzzQ-html-Twitpic-tab"><a href="#BuzzQ-html-Twitpic-pane" data-toggle="tab">Twitpic</a></li>
-                    </ul>
-
-                    <div class="tab-content" style="height:600px">
-
-                        <div class="tab-pane active" id="BuzzQ-html-Twitter-pane" ></div>
-                        <div class="tab-pane" id="BuzzQ-html-Instagram-pane"></div>
-                        <div class="tab-pane" id="BuzzQ-html-Flickr-pane">...</div>
-                        <div class="tab-pane" id="BuzzQ-html-Twitpic-pane">...</div>
                     </div>
-                    </div> <!-- tabbable -->
-                </div> <!--well -->
-            </div> <!-- span10 -->
-            <div class="span1"></div>
-        </div> <!-- row -->
+                </div>
+            </form>
+            <div id="BuzzQ-html-debugZone"></div>
 
+        </div>
     </div>
-    <!-- /container -->
-  </body>
+</div>
+
+
+<div class="container" id="BuzzQ-html-results">
+
+    <h3></h3>
+    <div id="BuzzQ-html-renderHere"></div>
+
+
+</div>
+<!-- /container -->
+
+
+<script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script src="./js/debug.js"></script>
+<script src="./js/BuzzQUI-Responsive.js"></script>
+<script src="./js/wireBuzzQ.js"></script>
+<script src="./js/ejs.js"></script>
+<script>
+    $(document).ready(function () {
+        //debug.println('Document Ready');
+        var UI = new BuzzQUI();
+        var wireBuzzQ = new WireBuzzQ();
+        UI.initUI();
+        wireBuzzQ.connectHTML(UI);
+    });
+</script>
+
+</body>
 </html>

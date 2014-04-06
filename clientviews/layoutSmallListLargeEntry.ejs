@@ -1,0 +1,38 @@
+<!--  Renders  small entries left (e.g. 4 tweets) and a large image right
+Template layoutSmallListLargeEntry.ejs
+
+var model = {largeLayoutEntry:res, smallLayoutEntries: []}; -->
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <% model.smallLayoutEntries.forEach(function(entry) { %>
+            <p><%- entry %></p>
+            <% }); %>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <% if (model.largeLayoutEntry.source == "instagram") { %>
+
+        <img src="<%= model.largeLayoutEntry.imageUrl %>" alt="">
+
+        <p><%= model.largeLayoutEntry.timestamp %></p>
+
+        <p class="small"><%= model.largeLayoutEntry.text %> </p>
+
+        <% }
+        else if (model.largeLayoutEntry.source == "flickr") { %>
+
+        <img src="<%= model.largeLayoutEntry.imageUrl %>" alt="">
+
+        <p><%= model.largeLayoutEntry.user %></p>
+
+        <p class="small"><%= model.largeLayoutEntry.text %> </p>
+
+        <% } %>
+
+    </div>
+
+
+</div>
+<div id="BuzzQ-html-renderHere"></div> <!-- marker for next rendering call -->

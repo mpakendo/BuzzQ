@@ -1,34 +1,38 @@
 <!-- Render the Flickr results. Template: flickrresults.ejs -->
-<div id="flickrCarousel" class="carousel slide">
-   <div class="carousel-inner">
-        <%
-        var counter = 0;
-        results.forEach(function(result) {
-        if (result.source == "flickr") {
-        if (!counter) {%>
-        <div class="item active">
-            <% }
-            else { %>
-        <div class="item">
-        <%}%>
-                <img src="<%=result.imageUrl%>" alt="">
-                <div class="container">
-                    <div class="carousel-caption">
-                        <h1><%=result.user%>
-                        </h1>
-                        <p class="small"><%=result.text%>
-                        </p>
-                    </div>
+<div id="flickrCarousel" class="carousel slide"><img src="<%= result.imageUrl %>" alt="">
+
+    <div class="container">
+        <div class="carousel-caption">
+            <h1><%= result.user %>
+            </h1>
+
+            <p class="small"><%= result.text %>
+            </p>
+        </div>
+        <div class="carousel-inner">
+            <%
+            var counter = 0;
+                    results.forEach(function(result) {
+                    if (result.source == "flickr") {
+                    if (!counter) { %>
+            <div class="item active">
+                <% }
+                else { %>
+                <div class="item">
+                    <% } %>
+
                 </div>
             </div>
             <%
-            counter++;
+                counter++;
             } //close if (result.source)
             }); //close results.forEach
             %>
         </div>
 
-           <a class="left carousel-control" href="#flickrCarousel" data-slide="prev">&lsaquo;</a>
-           <a class="right carousel-control" href="#flickrCarousel" data-slide="next">&rsaquo;</a>
+        <a class="left carousel-control" href="#flickrCarousel" data-slide="prev">&lsaquo;</a>
+        <a class="right carousel-control" href="#flickrCarousel" data-slide="next">&rsaquo;</a>
 
-</div><!-- /.carousel -->
+    </div>
+    <!-- /.carousel -->
+</div>
