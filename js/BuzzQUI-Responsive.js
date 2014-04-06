@@ -182,7 +182,7 @@ function BuzzQUI() {
 
             if (!(this.searchString == "")) {
                 //$('#BuzzQ-html-searchAction').popover('show');
-                $('#BuzzQ-html-results').html('<h3> </h3><div id=\"BuzzQ-html-renderHere\" > <br><h2>Loading..</h2></div>');
+                $('#BuzzQ-html-results').html('<h3> </h3><div id=\"BuzzQ-html-renderHere\" > <br><br><h2>Loading..</h2></div>');
                 $.getJSON(url, callbackFunction);
             }
         }
