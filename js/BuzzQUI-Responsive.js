@@ -157,6 +157,7 @@ function BuzzQUI() {
                     if (config.list.length== 0) {
                         config.list = altConfig.list;
                         config.limitSmallEntries = altConfig.limitSmallEntries;
+                        config.innerTemplate = altConfig.innerTemplate;
                     }
 
                     while (i < config.limitSmallEntries && ((a = config.list.shift()) != null)) {
