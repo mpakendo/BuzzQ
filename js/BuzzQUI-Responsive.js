@@ -18,10 +18,18 @@ function BuzzQUI() {
         instagramView: "",
         layoutLargeEntrySmallList: "",
         renderTweet: "",
-        renderTwitpic: "",
         layoutSmallListLargeEntry: ""
     };
     this.debug = false;
+
+    this.loadingDialog = $('<div></div>')
+            .html('<img src="./images/loader.gif"/>')
+            .dialog ({
+                autoOpen: false,
+                width: 30,
+                title: 'Loading Buzz'
+        });
+
 
 }
 
@@ -43,28 +51,7 @@ function BuzzQUI() {
 
     BuzzQUI.prototype.initUI = function () {
         // load client templates
-        /*
-         this.templates.twitterView = $.ajax({
-         type:"GET",
-         url:"./clientviews/twitterresults.ejs",
-         async:false
-         }).responseText;
-         this.templates.instagramView = $.ajax({
-         type:"GET",
-         url:"./clientviews/instagramresults.ejs",
-         async:false
-         }).responseText;
-         this.templates.flickrView = $.ajax({
-         type:"GET",
-         url:"./clientviews/flickrresults.ejs",
-         async:false
-         }).responseText;
-         this.templates.twitpicView = $.ajax({
-         type:"GET",
-         url:"./clientviews/twitpicresults.ejs",
-         async:false
-         }).responseText;
-         */
+
         this.templates.renderTweet = $.ajax({
             type: "GET",
             url: "./clientviews/renderTweet.ejs",
@@ -73,11 +60,6 @@ function BuzzQUI() {
         this.templates.layoutLargeEntrySmallList = $.ajax({
             type: "GET",
             url: "./clientviews/layoutLargeEntrySmallList.ejs",
-            async: false
-        }).responseText;
-        this.templates.renderTwitpic = $.ajax({
-            type: "GET",
-            url: "./clientviews/renderTwitpic.ejs",
             async: false
         }).responseText;
         this.templates.layoutSmallListLargeEntry = $.ajax({
@@ -110,7 +92,6 @@ function BuzzQUI() {
 
             function filter(results,tagStrings){
                 var filteredList = [];
-
                 results.forEach(function(res){
                     tagStrings.forEach(function(tag) {
                         if (res.source == tag) {
@@ -118,16 +99,15 @@ function BuzzQUI() {
                         }
                     });
                 });
-
                 return filteredList;
             }
 
 
             function callbackFunction(data) {
                 var html = "";
-                var largeLayoutResults = filter(data, ['instagram', 'flickr']);
+                var largeLayoutResults = filter(data, ['flickr', 'tumblr', 'instagram']);
+
                 var twitterResults = filter(data, ['twitter']);
-                var twitpicResults = filter(data, ['twitpic']);
                 var count = 0;
 
                 largeLayoutResults.forEach(function (res) {
@@ -137,14 +117,14 @@ function BuzzQUI() {
                     var renderConfig1 = {
                         outerTemplate: ui.templates.layoutLargeEntrySmallList,
                         innerTemplate: ui.templates.renderTweet,
-                        limitSmallEntries: 4,
+                        limitSmallEntries: 5,
                         list: twitterResults
                     };
                     var renderConfig2 = {
                         outerTemplate: ui.templates.layoutSmallListLargeEntry,
-                        innerTemplate: ui.templates.renderTwitpic,
-                        limitSmallEntries: 3,
-                        list: twitpicResults
+                        innerTemplate: ui.templates.renderTweet,
+                        limitSmallEntries: 5,
+                        list: twitterResults
                     };
                     var config = renderConfig1;
                     var altConfig = renderConfig2;
@@ -165,25 +145,20 @@ function BuzzQUI() {
                         i++;
                     }
                     html = ejs.render(config.outerTemplate, {model: model});
+                    ui.loadingDialog.dialog('close');
+
                     $('#BuzzQ-html-renderHere').replaceWith(html);
+                    $(function() {
+                      $("img.scale").imageScale();
+                    });
                 });
 
-/*
-                    $('#BuzzQ-html-searchAction').popover('destroy');
-                    html = ejs.render(ui.templates.twitterView, {results: data});
-                    $('#BuzzQ-html-Twitter-pane').html(html);
-                    html = ejs.render(ui.templates.instagramView, {results: data});
-                    $('#BuzzQ-html-Instagram-pane').html(html);
-                    html = ejs.render(ui.templates.flickrView, {results: data});
-                    $('#BuzzQ-html-Flickr-pane').html(html);
-                    html = ejs.render(ui.templates.twitpicView, {results: data});
-                    $('#BuzzQ-html-Twitpic-pane').html(html);
-*/
+
                 }
 
             if (!(this.searchString == "")) {
-                //$('#BuzzQ-html-searchAction').popover('show');
-                $('#BuzzQ-html-results').html('<h3> </h3><div id=\"BuzzQ-html-renderHere\" > <br><br><h2>Loading..</h2></div>');
+                $('#BuzzQ-html-results').html('<h3> </h3><div id=\"BuzzQ-html-renderHere\" ></div>');
+                this.loadingDialog.dialog('open');
                 $.getJSON(url, callbackFunction);
             }
         }

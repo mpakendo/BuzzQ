@@ -6,12 +6,12 @@
   and returns a JSON response.
   API's:
   - Twitter
-  - Twitpic
+  - Twitpic (no longer, as of fall 2014)
   - Flickr
   - Instagram
+  - Tumblr
 
   EJS (https://npmjs.org/package/ejs) is used together with Express (http://expressjs.com/) for server side templating.
- *
  *
  */
 
@@ -41,6 +41,7 @@ var Config = {
     twitter: {  consumerKey:null, // new Twitter API, see https://dev.twitter.com/docs/auth/application-only-auth
                 consumerSecret:null,
                 accessToken: null },
+    tumblr: {consumerKey:null},
     debug: {debugOn:false},
     api: {url:null}};
 var API = {
@@ -202,6 +203,7 @@ function queryServices(queryString, response, template) {
 
     /*  Instagram
      *  -------
+     *
      *  */
 
 
@@ -234,6 +236,65 @@ function queryServices(queryString, response, template) {
     }
 
 
+    /* Tumblr
+     * ------
+     *
+     */
+
+
+    var tumblrOptions = { // http://api.tumblr.com/v2/tagged?tag=lol&api_key=TUMBLR_CONSUMERKEY
+
+        host:'api.tumblr.com',
+        port:80,
+        path:'/v2/tagged?tag=' + encodeURIComponent(queryString) + '&limit=20&filter=text' + '&api_key=' + Config.tumblr.consumerKey
+    };
+
+    function tumblrEndCallback(apiPayload) {
+        if (apiPayload !== null && apiPayload.meta.status === 200) {
+            for (var i = 0; i < apiPayload.response.length; i++) {
+                var tags = apiPayload.response[i].tags;
+                var tagsText = "";
+                var imageUrl = "";
+
+                for (var j=0; j < tags.length; j++) {
+                    if (j == (tags.length - 1)) {
+                        tagsText = tagsText + tags[j];
+                    }
+                    else {
+                        tagsText = tagsText + tags[j] + ', ';
+                    }
+                }
+
+                switch (apiPayload.response[i].type) {
+                    case 'photo':
+                        imageUrl = apiPayload.response[i].photos[0].original_size.url;
+                        break;
+                    case 'audio':
+                        imageUrl =  apiPayload.response[i].album_art;
+                        break;
+                    case 'video':
+                        imageUrl = apiPayload.response[i].thumbnail_url;
+                        break;
+                    case 'text':
+                        break;
+                }
+
+                resultObjects.push({
+                    text:apiPayload.response[i].type+'- Tags: '+tagsText,
+                    timestamp:new Date(apiPayload.response[i].timestamp),
+                    user:'TumblR:'+apiPayload.response[i].blog_name,
+                    imageUrl:imageUrl,
+                    source:'tumblr',
+                    val1: apiPayload.response[i].post_url,
+                    val2: null,
+                    val3: null,
+                    val4: null
+                });
+            }
+        }
+    }
+
+
 
     function errorCallback (param) {
         return function (err) {
@@ -241,10 +302,10 @@ function queryServices(queryString, response, template) {
         }
     }
 
+    var tumblrCallPromise = callApiPromise(tumblrOptions)
+        .then(tumblrEndCallback, errorCallback('Tumblr'));
     var flickrCallPromise = callApiPromise(flickrOptions)
         .then(flickrEndCallback, errorCallback('Flickr'));
-    var twitPicCallPromise = callApiPromise(twitPicOptions)
-        .then(twitpicEndCallback, errorCallback('TwitPic'));
     var twitterCallPromise = callApiPromise(twitterOptions)
         .then(twitterEndCallback, errorCallback('Twitter'));
     var instagramCallPromise = callApiPromise(instagramOptions)
@@ -258,7 +319,7 @@ function queryServices(queryString, response, template) {
         }
     }
 
-    var allPromises = Q.allSettled([flickrCallPromise, twitPicCallPromise, twitterCallPromise, instagramCallPromise]);
+    var allPromises = Q.allSettled([flickrCallPromise, tumblrCallPromise, twitterCallPromise, instagramCallPromise]);
     allPromises.then(fulfilledPromisesHandler, errorCallback('All Promises'));
 
 }
@@ -275,11 +336,13 @@ app.configure('all',function() {
             Config.instagram.accessToken = process.env.INSTAGRAM_ACCESSTOKEN;
             Config.twitter.consumerKey = process.env.TWITTER_CONSUMERKEY;
             Config.twitter.consumerSecret = process.env.TWITTER_CONSUMERSECRET;
+            Config.tumblr.consumerKey = process.env.TUMBLR_CONSUMERKEY;
             Config.debug.debugOn = (process.env.DEBUG_DEBUGON=='true'?true:false);
             util.log('Read config var flickr API key:' + Config.flickr.apiKey);
             util.log('Read config var instagram access token:' + Config.instagram.accessToken);
             util.log('Read config var twitter consumer key:' + Config.twitter.consumerKey);
             util.log('Read config var twitter consumer secret:' + Config.twitter.consumerSecret);
+            util.log('Read config var tumblr consumer secret:' + Config.tumblr.consumerKey);
             util.log('Read config var debug:' + Config.debug.debugOn +'type:' + typeof(Config.debug.debugOn));
         }
         else {
@@ -363,7 +426,7 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/*.:format(html|js|css|jpg|png|ejs)', function (req, res) {
+app.get('/*.:format(html|js|css|jpg|png|ejs|gif)', function (req, res) {
     if (Config.debug.debugOn) {
         var url = urlModule.parse(req.url, true);
 

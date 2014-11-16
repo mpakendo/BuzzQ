@@ -29,10 +29,19 @@ var model = {largeLayoutEntry:res, smallLayoutEntries: []}; -->
 
         <p class="small"><%= model.largeLayoutEntry.text %> </p>
 
+        <% }
+        else if (model.largeLayoutEntry.source == "tumblr") { %>
+        <div style="width: 480px; height: 640px">
+            <img class="scale" data-scale="best-fit" data-align="top-right" src="<%= model.largeLayoutEntry.imageUrl%>" alt="">
+        </div>
+        <div>
+            <p><a href="<%=model.largeLayoutEntry.val1%>" target="_blank"><%=model.largeLayoutEntry.user%></a></p>
+            <p><%= model.largeLayoutEntry.text %> </p>
+        </div>
         <% } %>
 
     </div>
 
 
 </div>
-<div id="BuzzQ-html-renderHere"></div> <!-- marker for next rendering call -->
+<div id="BuzzQ-html-renderHere"></div>
