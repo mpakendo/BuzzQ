@@ -1,6 +1,6 @@
 <!-- Render a tweet -->
 <%
-    var linkPattern = new RegExp('((http)|(https)):\/\/([A-Za-z0-9\.\/])+(\.)*','g'); //this does not work!
+    var linkPattern = new RegExp('((http)|(https)):\/\/([A-Za-z0-9.\/?=&\-])+(…)*','g');
     var links = model.text.match(linkPattern);
     var twitterNamePattern = new RegExp('@([A-Za-z0-9_])+','g');
     var twitterNames = model.text.match(twitterNamePattern);
@@ -21,13 +21,8 @@
               for (var j = 0; j<links.length; j++) {
                   var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
                   debug.println('CHARAT'+links[j].charAt(links[j].length-1));
-                  if (links[j].charAt(links[j].length-1) != '.') { //shortened URL such as http://t.co/KzGRIxG…
+                  if (links[j].charAt(links[j].length-1) != '…') { //shortened URL such as http://t.co/KzGRIxG…
                       newText = newText.replace(links[j], htmlLink);
-                      debug.println('');
-                      debug.println('MODEL.TEXT:' + model.text);
-                      debug.println('Replace link no.' + j + ':' + links[j]);
-                      debug.println('NEWTEXT' + newText);
-                      debug.println('');
                   }
               }
         if (twitterNames)
