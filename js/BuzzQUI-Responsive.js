@@ -12,13 +12,10 @@ function BuzzQUI() {
         rssEndPoint: "feed"
     };
     this.templates = {
-        twitterView: "",
-        flickrView: "",
-        twitpicView: "",
-        instagramView: "",
         layoutLargeEntrySmallList: "",
+        layoutSmallListLargeEntry: "",
         renderTweet: "",
-        layoutSmallListLargeEntry: ""
+        renderTumblrText: ""
     };
     this.debug = false;
 
@@ -57,6 +54,11 @@ function BuzzQUI() {
             url: "./clientviews/renderTweet.ejs",
             async: false
         }).responseText;
+        this.templates.renderTumblrText= $.ajax({
+                    type: "GET",
+                    url: "./clientviews/renderTumblrText.ejs",
+                    async: false
+                }).responseText;
         this.templates.layoutLargeEntrySmallList = $.ajax({
             type: "GET",
             url: "./clientviews/layoutLargeEntrySmallList.ejs",
@@ -105,10 +107,11 @@ function BuzzQUI() {
 
             function callbackFunction(data) {
                 var html = "";
-                var largeLayoutResults = filter(data, ['flickr', 'tumblr', 'instagram']);
-
-                var twitterResults = filter(data, ['twitter']);
+                var largeLayoutResults = filter(data, ['flickr', 'tumblr.photo', 'instagram']);
+                var smallLayoutResults = filter(data, ['twitter','tumblr.text']);
                 var count = 0;
+
+                ui.loadingDialog.dialog('close');
 
                 largeLayoutResults.forEach(function (res) {
                     var model = {largeLayoutEntry: res, smallLayoutEntries: []};
@@ -116,36 +119,28 @@ function BuzzQUI() {
                     var a = {};
                     var renderConfig1 = {
                         outerTemplate: ui.templates.layoutLargeEntrySmallList,
-                        innerTemplate: ui.templates.renderTweet,
-                        limitSmallEntries: 5,
-                        list: twitterResults
+                        limitSmallEntries: 5
                     };
                     var renderConfig2 = {
                         outerTemplate: ui.templates.layoutSmallListLargeEntry,
-                        innerTemplate: ui.templates.renderTweet,
-                        limitSmallEntries: 5,
-                        list: twitterResults
+                        limitSmallEntries: 5
                     };
                     var config = renderConfig1;
-                    var altConfig = renderConfig2;
 
                     if ((count++ % 2) == 0) {
                         config = renderConfig2;
-                        altConfig = renderConfig1;
                     }
 
-                    if (config.list.length== 0) {
-                        config.list = altConfig.list;
-                        config.limitSmallEntries = altConfig.limitSmallEntries;
-                        config.innerTemplate = altConfig.innerTemplate;
-                    }
 
-                    while (i < config.limitSmallEntries && ((a = config.list.shift()) != null)) {
-                        model.smallLayoutEntries.push(ejs.render(config.innerTemplate, {model: a}));
+                    while (i < config.limitSmallEntries && ((a = smallLayoutResults.shift()) != null)) {
+                        if (a.source == 'twitter') {
+                            model.smallLayoutEntries.push(ejs.render(ui.templates.renderTweet, {model: a}));
+                        } else if (a.source == 'tumblr.text') {
+                            model.smallLayoutEntries.push(ejs.render(ui.templates.renderTumblrText, {model: a}));
+                        }
                         i++;
                     }
                     html = ejs.render(config.outerTemplate, {model: model});
-                    ui.loadingDialog.dialog('close');
 
                     $('#BuzzQ-html-renderHere').replaceWith(html);
                     $(function() {

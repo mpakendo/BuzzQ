@@ -19,16 +19,14 @@ var model = {largeLayoutEntry:res, smallLayoutEntries: []}; -->
         <p class="small"><%= model.largeLayoutEntry.text %> </p>
 
         <% }
-        else if (model.largeLayoutEntry.source == "tumblr") { %>
-
-        <div style="width: 480px; height: 640px">
-            <img class="scale" data-scale="best-fit"  data-align="top-left" src="<%= model.largeLayoutEntry.imageUrl%>" alt="">
+        else if (model.largeLayoutEntry.source == "tumblr.photo") { %>
+        <div style="width: 480px; height: 540px">
+            <img class="scale" data-scale="best-fit" data-align="top-right" src="<%= model.largeLayoutEntry.imageUrl%>" alt="">
         </div>
-        <div>
-            <p><a href="<%=model.largeLayoutEntry.val1%>" target="_blank"><%=model.largeLayoutEntry.user%></a></p>
-            <p><%= model.largeLayoutEntry.text %> </p>
-        </div>
+        <a href="<%=model.largeLayoutEntry.val1%>" target="_blank"><%=model.largeLayoutEntry.user%></a><!-- val1: postURL -->
+        <p class="small"> <%= model.largeLayoutEntry.text %> </p>
         <% } %>
+
     </div>
     <div class="col-md-4">
             <div class="row">

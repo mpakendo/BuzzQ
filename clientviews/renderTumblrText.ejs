@@ -1,0 +1,14 @@
+<!-- Render a single tumblr text result. Template: renderTumblrText.ejs -->
+<%
+  var truncatedBodyText = model.val3;
+ %>
+<div>
+        <a href="http://<%=model.user%>.tumblr.com" target="_blank"><%=model.user%></a>
+        <p>
+        <a href="<%=model.val1%>" target="_blank"><%=model.val2%></a><!-- val1: postURL, val2: title -->
+        <% if (model.val3.length > 200) {
+            truncatedBodyText = model.val3.substring(0,197)+"..";
+        } %>
+        <%-truncatedBodyText%></p>
+        <p class="small"> <%= model.text %> </p>
+</div>

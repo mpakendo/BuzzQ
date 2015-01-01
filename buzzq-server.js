@@ -255,6 +255,10 @@ function queryServices(queryString, response, template) {
                 var tags = apiPayload.response[i].tags;
                 var tagsText = "";
                 var imageUrl = "";
+                var title = "";
+                var body = "";
+                var type = apiPayload.response[i].type;
+                var subtype = "";
 
                 for (var j=0; j < tags.length; j++) {
                     if (j == (tags.length - 1)) {
@@ -265,9 +269,10 @@ function queryServices(queryString, response, template) {
                     }
                 }
 
-                switch (apiPayload.response[i].type) {
+                switch (type) {
                     case 'photo':
                         imageUrl = apiPayload.response[i].photos[0].original_size.url;
+                        subtype =  'tumblr.photo';
                         break;
                     case 'audio':
                         imageUrl =  apiPayload.response[i].album_art;
@@ -276,18 +281,22 @@ function queryServices(queryString, response, template) {
                         imageUrl = apiPayload.response[i].thumbnail_url;
                         break;
                     case 'text':
+                        subtype =  'tumblr.text';
+                        title = apiPayload.response[i].title;
+                        body = apiPayload.response[i].body;
                         break;
                 }
 
+                if (type == 'photo' || type == 'text' )
                 resultObjects.push({
-                    text:apiPayload.response[i].type+'- Tags: '+tagsText,
+                    text:type+' - Tags: '+tagsText,
                     timestamp:new Date(apiPayload.response[i].timestamp),
-                    user:'TumblR:'+apiPayload.response[i].blog_name,
-                    imageUrl:imageUrl,
-                    source:'tumblr',
+                    user: apiPayload.response[i].blog_name,
+                    imageUrl: imageUrl,
+                    source: subtype,
                     val1: apiPayload.response[i].post_url,
-                    val2: null,
-                    val3: null,
+                    val2: title,
+                    val3: body,
                     val4: null
                 });
             }
