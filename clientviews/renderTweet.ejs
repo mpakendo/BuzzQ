@@ -34,10 +34,10 @@
 
               for (j = 0; j < tags.length; j++) {
                   var tagSansHash = tags[j].substring(1, tags[j].length);
-                  var hashTagLink = '<a href=\"https://twitter.com/hashtag/' + tagSansHash + '?src=hash' + '\" target=\"_blank\">' +'HASH'+ tagSansHash + '</a>';
+                  var hashTagLink = '<a href=\"https://twitter.com/hashtag/' + tagSansHash + '?src=hash' + '\" target=\"_blank\">' +'HASHTAG'+ tagSansHash + '</a>';
                   newText = newText.replace(tags[j], hashTagLink);
               }
-              newText = newText.replace(new RegExp('HASH','g'),'#');
+              newText = newText.replace(new RegExp('HASHTAG','g'),'#');
           }
         %>
     <%-newText%><br> <!-- unescaped buffering in this case -->

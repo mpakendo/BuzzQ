@@ -22,20 +22,17 @@ function WireBuzzQ() {
             UI.setSearchString(event);
         });
 
-        /* TODO: Get root cause why keydown causes window.load
         $("#BuzzQ-html-searchString").keydown(function (event) {
             if (event.which == 13) { //Mozilla event.which, ASC(13) = return
                 UI.setSearchString(event);
                 fireQuery(event);
             }
-        }); */
+        });
 
         $("#BuzzQ-html-rssAction").click(function(event) {
             UI.gotoURL(event);
         });
 
-
-        //debug.println('CALLING AJAX URL:'+UI.api.url+UI.api.configEndPoint);
 
         $.getJSON(UI.api.url+UI.api.configEndPoint, function(configData) {
             if ('true'==configData.debug.debugOn || configData.debug.debugOn) {
@@ -46,7 +43,6 @@ function WireBuzzQ() {
                 );
             }
         });
-
 
 
     }; //WireBuzzQ.prototype.connectHTML
