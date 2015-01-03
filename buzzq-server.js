@@ -289,7 +289,7 @@ function queryServices(queryString, response, template) {
 
                 if (type == 'photo' || type == 'text' )
                 resultObjects.push({
-                    text:type+' - Tags: '+tagsText,
+                    text:'Tags: '+tagsText,
                     timestamp:new Date(apiPayload.response[i].timestamp),
                     user: apiPayload.response[i].blog_name,
                     imageUrl: imageUrl,

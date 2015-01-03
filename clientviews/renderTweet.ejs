@@ -4,10 +4,10 @@
     var links = model.text.match(linkPattern);
     var twitterNamePattern = new RegExp('@([A-Za-z0-9_])+','g');
     var twitterNames = model.text.match(twitterNamePattern);
+    var hashTagPattern = new RegExp('#([A-Za-z0-9_])+','g');
+    var hashTags = model.text.match(hashTagPattern);
     var newText = model.text;
-
 %>
-
     <p>
     <img src="<%=model.imageUrl%>" alt="<%=model.user%>" />
     <a href="https://twitter.com/#!<%=model.user%>" target="_blank">
@@ -15,7 +15,7 @@
     </a>
     <br>
     <%
-        if (links!=null || twitterNames !=null) {
+        if (links!=null || twitterNames !=null || hashTags != null) {
           if (links)
               for (var j = 0; j<links.length; j++) {
                   var htmlLink = '<a href=\"'+links[j] + '\" target=\"_blank\">' + links[j] +'</a>';
@@ -24,11 +24,21 @@
                       newText = newText.replace(links[j], htmlLink);
                   }
               }
-        if (twitterNames)
+          if (twitterNames)
               for (j = 0; j<twitterNames.length; j++) {
                   var twitterLink = '<a href=\"https://twitter.com/'+twitterNames[j] + '\" target=\"_blank\">' + twitterNames[j] +'</a>';
                   newText = newText.replace(twitterNames[j],twitterLink);
               }
+          if (hashTags) { //https://twitter.com/hashtag/tag?src=hash
+              var tags = hashTags.sort().reverse(); // to catch problems like '#abc #abcd'
+
+              for (j = 0; j < tags.length; j++) {
+                  var tagSansHash = tags[j].substring(1, tags[j].length);
+                  var hashTagLink = '<a href=\"https://twitter.com/hashtag/' + tagSansHash + '?src=hash' + '\" target=\"_blank\">' +'HASH'+ tagSansHash + '</a>';
+                  newText = newText.replace(tags[j], hashTagLink);
+              }
+              newText = newText.replace(new RegExp('HASH','g'),'#');
+          }
         %>
     <%-newText%><br> <!-- unescaped buffering in this case -->
     <%} else {%>

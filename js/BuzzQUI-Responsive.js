@@ -117,22 +117,14 @@ function BuzzQUI() {
                     var model = {largeLayoutEntry: res, smallLayoutEntries: []};
                     var i = 0;
                     var a = {};
-                    var renderConfig1 = {
-                        outerTemplate: ui.templates.layoutLargeEntrySmallList,
-                        limitSmallEntries: 5
-                    };
-                    var renderConfig2 = {
-                        outerTemplate: ui.templates.layoutSmallListLargeEntry,
-                        limitSmallEntries: 5
-                    };
-                    var config = renderConfig1;
+                    var limitSmallEntries = 5;
+                    var outerTemplate = ui.templates.layoutSmallListLargeEntry;
 
                     if ((count++ % 2) == 0) {
-                        config = renderConfig2;
+                        outerTemplate = ui.templates.layoutLargeEntrySmallList;
                     }
 
-
-                    while (i < config.limitSmallEntries && ((a = smallLayoutResults.shift()) != null)) {
+                    while (i < limitSmallEntries && ((a = smallLayoutResults.shift()) != null)) {
                         if (a.source == 'twitter') {
                             model.smallLayoutEntries.push(ejs.render(ui.templates.renderTweet, {model: a}));
                         } else if (a.source == 'tumblr.text') {
@@ -140,7 +132,7 @@ function BuzzQUI() {
                         }
                         i++;
                     }
-                    html = ejs.render(config.outerTemplate, {model: model});
+                    html = ejs.render(outerTemplate, {model: model});
 
                     $('#BuzzQ-html-renderHere').replaceWith(html);
                     $(function() {
